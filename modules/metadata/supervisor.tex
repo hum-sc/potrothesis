@@ -1,22 +1,22 @@
 \ExplSyntaxOn
-\seq_new:N \g__mitthesis_supervisor_name_seq
-\seq_new:N \g__mitthesis_supervisor_title_seq
-\seq_new:N \g__mitthesis_supervisor_dept_seq
-\int_gzero_new:N \g__mitthesis_supervisor_cnt_int
+\seq_new:N \g__potrothesis_supervisor_name_seq
+\seq_new:N \g__potrothesis_supervisor_title_seq
+\seq_new:N \g__potrothesis_supervisor_dept_seq
+\int_gzero_new:N \g__potrothesis_supervisor_cnt_int
 
 \NewDocumentCommand\Supervisor{mmo}{
 	\tl_if_blank:nT {#1} { \msg_error:nn { \ClassName } { blank_supervisor }       }
 	\tl_if_blank:nT {#2} { \msg_error:nn { \ClassName } { blank_supervisor_title } }
 	\IfNoValueTF {#3} 
 		{ 	\msg_note:nn { \ClassName } { no_supervisor_dept  } 
-			\__mitthesis_gset_supervisor_data:nnn {#1} {#2}
+			\__potrothesis_gset_supervisor_data:nnn {#1} {#2}
 				{ Department~argument~was~not~used~in~\Supervisor~command. }
 		} 
 		{ 	\tl_if_blank:nTF {#3}
 				{ 	\msg_note:nn { \ClassName } { blank_supervisor_dept  } 
-					\__mitthesis_gset_supervisor_data:nnn {#1} {#2} { Blank~department~in~\Supervisor~command. }
+					\__potrothesis_gset_supervisor_data:nnn {#1} {#2} { Blank~department~in~\Supervisor~command. }
 				}{
-					\__mitthesis_gset_supervisor_data:nnn {#1} {#2} {#3}
+					\__potrothesis_gset_supervisor_data:nnn {#1} {#2} {#3}
 				}
 		}
 }
@@ -43,55 +43,55 @@
 		  The~supervisor's~department~is~used~only~in~the~optional~Thesis~Committee~page.
 		}
 
-\cs_new_protected:Nn \__mitthesis_gset_supervisor_data:nnn
+\cs_new_protected:Nn \__potrothesis_gset_supervisor_data:nnn
  {
-	\int_gincr:N \g__mitthesis_supervisor_cnt_int
-	\seq_gput_right:Ne  \g__mitthesis_supervisor_name_seq   { \tl_trim_spaces:n {#1} } 
-	\seq_gput_right:Ne  \g__mitthesis_supervisor_title_seq  { \tl_trim_spaces:n {#2} }
-	\seq_gput_right:Ne  \g__mitthesis_supervisor_dept_seq   { \tl_trim_spaces:n {#3} }
+	\int_gincr:N \g__potrothesis_supervisor_cnt_int
+	\seq_gput_right:Ne  \g__potrothesis_supervisor_name_seq   { \tl_trim_spaces:n {#1} } 
+	\seq_gput_right:Ne  \g__potrothesis_supervisor_title_seq  { \tl_trim_spaces:n {#2} }
+	\seq_gput_right:Ne  \g__potrothesis_supervisor_dept_seq   { \tl_trim_spaces:n {#3} }
  }
 
-\tl_new:N   \g__mitthesis_titlepg_sup_designation_tl
-\tl_new:N   \g__mitthesis_abst_sup_designation_tl
-\tl_gset:Nn \g__mitthesis_titlepg_sup_designation_tl { Thesis~Supervisor } 
-\tl_gset:Nn \g__mitthesis_abst_sup_designation_tl  { Thesis~supervisor } % style per MIT Libraries
+\tl_new:N   \g__potrothesis_titlepg_sup_designation_tl
+\tl_new:N   \g__potrothesis_abst_sup_designation_tl
+\tl_gset:Nn \g__potrothesis_titlepg_sup_designation_tl { Thesis~Supervisor } 
+\tl_gset:Nn \g__potrothesis_abst_sup_designation_tl  { Thesis~supervisor } % style per MIT Libraries
 
 % If for some reason you need to change "Thesis Supervisor" to a different string (say, "Doctoral Advisor").
 % Note: this construction removes leading and trailing spaces and changes text case of the string.
 \NewDocumentCommand\SupervisorDesignation{ m } { 
-		\tl_gset:Nn \g__mitthesis_titlepg_sup_designation_tl 
+		\tl_gset:Nn \g__potrothesis_titlepg_sup_designation_tl 
 				{ \cs_if_exist:NTF \text_titlecase_all:n % not def'd until 2023/07/08
 					{ \text_titlecase_all:n { \text_lowercase:n { \tl_trim_spaces:n {#1} } } }
 					{ \tl_trim_spaces:n {#1} }
 				}
-		\tl_gset:Nn \g__mitthesis_abst_sup_designation_tl  
+		\tl_gset:Nn \g__potrothesis_abst_sup_designation_tl  
 				{ \text_titlecase_first:n { \text_lowercase:n { \tl_trim_spaces:n {#1} } } }
 		}
 		
-\cs_new_protected:Nn \__mitthesis_supervisor_abstractblock: { % revised 2025/10/09, eliminate bug and use multiple tables; 2026/01/18, eliminate tables
+\cs_new_protected:Nn \__potrothesis_supervisor_abstractblock: { % revised 2025/10/09, eliminate bug and use multiple tables; 2026/01/18, eliminate tables
 	\int_set:Nn  \l_tmpa_int {1} % counts supervisors
 	\setlength{\parindent}{0pt}
 	\par\bigskip
-	\int_compare:nNnTF { \g__mitthesis_supervisor_cnt_int } = {0} {
+	\int_compare:nNnTF { \g__potrothesis_supervisor_cnt_int } = {0} {
 		\msg_error:nn { \ClassName } { no_supervisor }
 		}	
 		{
-		\int_until_do:nNnn { \l_tmpa_int } = { \g__mitthesis_supervisor_cnt_int } {
-			\tl_set:Ne \l_tmpa_tl  { \seq_item:NV \g__mitthesis_supervisor_title_seq \l_tmpa_int }
+		\int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_supervisor_cnt_int } {
+			\tl_set:Ne \l_tmpa_tl  { \seq_item:NV \g__potrothesis_supervisor_title_seq \l_tmpa_int }
 			\regex_replace_all:nnN { \& \s* } { \c{phantom}{Title:\c{space}} } \l_tmpa_tl 
 			\tag_struct_begin:n { tag = Abstract_supervisor, title = Abstract~supervisor}
-    			\g__mitthesis_abst_sup_designation_tl  :\space 
-    			\seq_item:NV \g__mitthesis_supervisor_name_seq \l_tmpa_int \par
+    			\g__potrothesis_abst_sup_designation_tl  :\space 
+    			\seq_item:NV \g__potrothesis_supervisor_name_seq \l_tmpa_int \par
     			Title:\space \l_tmpa_tl
     			\int_gincr:N \l_tmpa_int
 			\tag_struct_end:
 			\skip_vertical:n {12pt}
 			}
-			\tl_set:Ne \l_tmpa_tl {\seq_item:NV \g__mitthesis_supervisor_title_seq \l_tmpa_int }
+			\tl_set:Ne \l_tmpa_tl {\seq_item:NV \g__potrothesis_supervisor_title_seq \l_tmpa_int }
 			\regex_replace_all:nnN { \& \s* } { \c{phantom}{Title:\c{space}} } \l_tmpa_tl 
 			\tag_struct_begin:n { tag = Abstract_supervisor, title = Abstract~supervisor}
-			\g__mitthesis_abst_sup_designation_tl  :\space  
-			\seq_item:NV \g__mitthesis_supervisor_name_seq \l_tmpa_int \par
+			\g__potrothesis_abst_sup_designation_tl  :\space  
+			\seq_item:NV \g__potrothesis_supervisor_name_seq \l_tmpa_int \par
 			Title:\space   \l_tmpa_tl 
 			\tag_struct_end:
 			\ignorespaces

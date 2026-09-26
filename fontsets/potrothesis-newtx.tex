@@ -1,22 +1,15 @@
-% From mitthesis package
-% Documentation: https://ctan.org/pkg/mitthesis
+% From potrothesis package
+% Documentation: https://ctan.org/pkg/potrothesis
 
-\ProvidesFile{mitthesis-newtx-sans-text.tex}[2026/01/31 v1.05 Load newtx sans-serif text and regular math fonts]
+\ProvidesFile{potrothesis-newtx.tex}[2026/01/31 v1.05 Load newtx text and math fonts]
 
-%% newtx package with sans-serif text (Helvetica-like text with Times-like math)
-%
 \ifpdftex
-	\ClassNoteNoLine{\ClassName}{Loading newtx sans-serif text and newtx serif math fonts}
+	\ClassNoteNoLine{\ClassName}{Loading newtx fonts with inconsolata typewriter}
 	\RequirePackage[T1]{fontenc}
-    \RequirePackage[subscriptcorrection,varvw,helvratio=0.91,defaultsups]{newtx}% upint for upright integrals
-	\AtEndPreamble{% added to accommodate v1.731 of newtx, 2023/11/03
-	    \renewcommand{\familydefault}{\sfdefault}% use sans for main text
-%	    \renewcommand{\rmdefault}{\sfdefault}% uses sans for \textrm{}, if that's desired.
-	}
-%   these two commands enable hyphenation of the typewriter font - https://tex.stackexchange.com/a/204421/119566
-%    \input{t1ntxtt.fd}
-%    \DeclareFontFamily{\encodingdefault}{\ttdefault}{\hyphenchar\font=`\-} % 
-	\RequirePackage{bm}% bold math
+    \RequirePackage[subscriptcorrection,varvw,helvratio=0.91]{newtx}% stix2, upint
+    \RequirePackage[varl,varqu,hyphenate,mono]{inconsolata}% sans typewriter font; mono = fixed word spacing, hyphenate = allow hyphenation 
+	\RequirePackage{bm}
+	\let\textsuperscript\textsu% newtx changes the default superiors font; this is needed to get commas aligned in sequential footnotes
 	%
 	\RequirePackage{etoolbox} % may already be loaded by the .cls file
 	% Patch headings to automatically use \mathversion{bold}. Compare to report.cls. 

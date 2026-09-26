@@ -1,12 +1,12 @@
 \ExplSyntaxOn
 
 \newif\ifmit@mydesign
-\cs_new_protected:Npn \__mitthesis_gset_testdesign:n #1
+\cs_new_protected:Npn \__potrothesis_gset_testdesign:n #1
 	{
     	\mit@mydesigntrue
-    	\tl_new:N       \g__mitthesis_testkey_tl
-    	\tl_gset:Nn     \g__mitthesis_testkey_tl {#1}
-    	\tl_if_empty:NT \g__mitthesis_testkey_tl { \tl_gset:Nn \g__mitthesis_testkey_tl {mydesign} } 
+    	\tl_new:N       \g__potrothesis_testkey_tl
+    	\tl_gset:Nn     \g__potrothesis_testkey_tl {#1}
+    	\tl_if_empty:NT \g__potrothesis_testkey_tl { \tl_gset:Nn \g__potrothesis_testkey_tl {mydesign} } 
 	}
 
 \IfFormatAtLeastTF{2022/11/01}{%
@@ -15,7 +15,7 @@
     	fontset  	  .usage  = load ,
     	lineno   	  .if     = mit@lineno ,
     	lineno 	 	  .usage  = load ,
-    	mydesign 	  .code	  = \__mitthesis_gset_testdesign:n {#1} , 
+    	mydesign 	  .code	  = \__potrothesis_gset_testdesign:n {#1} , 
     	mydesign 	  .usage  = load,
     } 
     \SetKeys[\ClassName]{fontset=defaultfonts}%
@@ -34,7 +34,7 @@
     \DeclareBoolOption{lineno}
     % set key [mydesign] to input file mydesign.tex
     \define@key{\ClassName}{mydesign}[mydesign]
-    	{ \__mitthesis_gset_testdesign:n {#1} }
+    	{ \__potrothesis_gset_testdesign:n {#1} }
     %
     \ProcessKeyvalOptions{\ClassName}
     %

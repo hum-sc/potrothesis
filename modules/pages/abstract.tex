@@ -14,15 +14,15 @@
         {\large 
 			\tag_struct_begin:n { tag = Strong }
 	        \tag_mc_begin:n     { tag = Strong }            
-        	{ \textbf{ \g_mitthesis_title_tl } }
+        	{ \textbf{ \g_potrothesis_title_tl } }
 	        \tag_mc_end:
 	        \tag_struct_end:
         \par}
         \tag_struct_end:
         \setlength{\parskip}{0.5\baselineskip plus 2pt minus 2pt}
-        \__mitthesis_author_abstractblock:
+        \__potrothesis_author_abstractblock:
         \par
-        \__mitthesis_degree_abstractblock:
+        \__potrothesis_degree_abstractblock:
 	}
     \skip_vertical:n {2\baselineskip}
     \noindent
@@ -37,7 +37,7 @@
 	\par\tag_struct_end:
 	\tl_if_blank:nT {#1} { MISSING\ ABSTRACT!  \msg_error:nn { \ClassName } { missing_abstract } }
 }{
-    \__mitthesis_supervisor_abstractblock:
+    \__potrothesis_supervisor_abstractblock:
 	\tag_struct_end: % end section
 	\cleardoublepage\ignorespacesafterend
 }

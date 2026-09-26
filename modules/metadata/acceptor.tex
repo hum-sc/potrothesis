@@ -1,21 +1,21 @@
 \ExplSyntaxOn
-\seq_new:N \g__mitthesis_acceptor_name_seq
-\seq_new:N \g__mitthesis_acceptor_dept_seq
-\seq_new:N \g__mitthesis_acceptor_title_seq
-\int_gzero_new:N \g__mitthesis_acceptor_cnt_int
+\seq_new:N \g__potrothesis_acceptor_name_seq
+\seq_new:N \g__potrothesis_acceptor_dept_seq
+\seq_new:N \g__potrothesis_acceptor_title_seq
+\int_gzero_new:N \g__potrothesis_acceptor_cnt_int
 
-\bool_new:N \g__mitthesis_acceptor_title_bool
-\bool_gset_false:N \g__mitthesis_acceptor_title_bool
+\bool_new:N \g__potrothesis_acceptor_title_bool
+\bool_gset_false:N \g__potrothesis_acceptor_title_bool
 
 \NewDocumentCommand\Acceptor{mmm}{
 	\tl_if_blank:nTF {#1} {
 		\msg_error:nn { \ClassName } { blank_acceptor }
 		}{
-		\__mitthesis_gset_acceptor_data:nnn {#1} {#2} {#3}
+		\__potrothesis_gset_acceptor_data:nnn {#1} {#2} {#3}
 	}
 	\tl_if_blank:nT  {#2} { \msg_error:nn { \ClassName } { blank_acceptor_dep } }
 	\tl_if_blank:nTF {#3} {
-		\bool_gset_true:N \g__mitthesis_acceptor_title_bool
+		\bool_gset_true:N \g__potrothesis_acceptor_title_bool
 		\msg_warning:nn { \ClassName } { blank_acceptor_title }}{}
 }
 \msg_new:nnnn { \ClassName } { blank_acceptor }
@@ -31,11 +31,11 @@
 		  For~consistency,~I~will~omit~titles~of~ALL~acceptors.
 		}
 
-\cs_new_protected:Nn \__mitthesis_gset_acceptor_data:nnn
+\cs_new_protected:Nn \__potrothesis_gset_acceptor_data:nnn
  {
-	\int_gincr:N \g__mitthesis_acceptor_cnt_int
-	\seq_gput_right:Ne  \g__mitthesis_acceptor_name_seq  { \tl_trim_spaces:n {#1} } 
-	\seq_gput_right:Ne  \g__mitthesis_acceptor_dept_seq  { \tl_trim_spaces:n {#2} }
-	\seq_gput_right:Ne  \g__mitthesis_acceptor_title_seq { \tl_trim_spaces:n {#3} }
+	\int_gincr:N \g__potrothesis_acceptor_cnt_int
+	\seq_gput_right:Ne  \g__potrothesis_acceptor_name_seq  { \tl_trim_spaces:n {#1} } 
+	\seq_gput_right:Ne  \g__potrothesis_acceptor_dept_seq  { \tl_trim_spaces:n {#2} }
+	\seq_gput_right:Ne  \g__potrothesis_acceptor_title_seq { \tl_trim_spaces:n {#3} }
  }
 \ExplSyntaxOff

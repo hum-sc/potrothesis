@@ -85,7 +85,7 @@
       <file>template.bcf</file>
     </requires>
     <requires type="editable">
-      <file>mitthesis-sample.bib</file>
+      <file>potrothesis-sample.bib</file>
     </requires>
   </external>
 </requests>

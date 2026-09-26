@@ -1,15 +1,15 @@
 \ExplSyntaxOn
-\tl_new:N \g__mitthesis_dd_month_tl	
-\tl_new:N \g__mitthesis_dd_year_tl
+\tl_new:N \g__potrothesis_dd_month_tl	
+\tl_new:N \g__potrothesis_dd_year_tl
 
 \cs_generate_variant:Nn  \tl_gremove_all:Nn {No}
-\cs_new_protected:Nn   \__mitthesis_gset_dd_dates:nn {
-	\tl_gset:Nn        \g__mitthesis_dd_month_tl {#1}
-	\tl_gset:Nn        \g__mitthesis_dd_year_tl  {#2}
-	\tl_gremove_all:No \g__mitthesis_dd_month_tl { \space }
-	\tl_gremove_all:No \g__mitthesis_dd_year_tl  { \space }
+\cs_new_protected:Nn   \__potrothesis_gset_dd_dates:nn {
+	\tl_gset:Nn        \g__potrothesis_dd_month_tl {#1}
+	\tl_gset:Nn        \g__potrothesis_dd_year_tl  {#2}
+	\tl_gremove_all:No \g__potrothesis_dd_month_tl { \space }
+	\tl_gremove_all:No \g__potrothesis_dd_year_tl  { \space }
  	\str_case_e:nnF 
-		{ \str_lowercase:f { \tl_to_str:N  \g__mitthesis_dd_month_tl } }
+		{ \str_lowercase:f { \tl_to_str:N  \g__potrothesis_dd_month_tl } }
 	 	{ {february}{} {may}{} {june}{} {september}{} }
 		{ \msg_error:nnn { \ClassName } { wrong_month } {#1} } 
 }
@@ -18,21 +18,21 @@
 	{ MIT~does~not~use~#1~as~the~degree~month. }
 
 \NewDocumentCommand\DegreeDate{mm}{ %   {month}{year}	
-	\__mitthesis_gset_dd_dates:nn {#1} {#2}
-	\cs_new:Npn \DegreeMonth { \text_titlecase_first:n { \text_lowercase:n \g__mitthesis_dd_month_tl } }
-	\cs_new:Npn \DegreeYear  { \text_expand:n { \g__mitthesis_dd_year_tl  } } % edited 2024/06/24
+	\__potrothesis_gset_dd_dates:nn {#1} {#2}
+	\cs_new:Npn \DegreeMonth { \text_titlecase_first:n { \text_lowercase:n \g__potrothesis_dd_month_tl } }
+	\cs_new:Npn \DegreeYear  { \text_expand:n { \g__potrothesis_dd_year_tl  } } % edited 2024/06/24
 }
 \msg_new:nnnn { \ClassName } { no_degree_date } { Missing~degree~date! }{
 			You~MUST~issue~the~\DegreeDate{month}{year}~command~between~\string\begin{document}~and~\string\maketitle. }
 		
 \NewDocumentCommand\ThesisDate{m}{
-	\tl_if_exist:NTF \g_mitthesis_dd_thesisdate_tl 
-		{ \g_mitthesis_dd_thesisdate_tl } { \__mitthesis_gset_dd_thesisdate:n {#1} }% will use only value given first
+	\tl_if_exist:NTF \g_potrothesis_dd_thesisdate_tl 
+		{ \g_potrothesis_dd_thesisdate_tl } { \__potrothesis_gset_dd_thesisdate:n {#1} }% will use only value given first
 }
 
-\cs_new_protected:Nn \__mitthesis_gset_dd_thesisdate:n {
-	\tl_new:N        \g_mitthesis_dd_thesisdate_tl
-	\tl_gset:Ne      \g_mitthesis_dd_thesisdate_tl { \tl_trim_spaces:n {#1} }
+\cs_new_protected:Nn \__potrothesis_gset_dd_thesisdate:n {
+	\tl_new:N        \g_potrothesis_dd_thesisdate_tl
+	\tl_gset:Ne      \g_potrothesis_dd_thesisdate_tl { \tl_trim_spaces:n {#1} }
 }
 
 % If for some reason you don't want a warning when you supply the wrong month

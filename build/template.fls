@@ -108,8 +108,8 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/pdfmanagement/pdfmanagement-firsta
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pdfmanagement/pdfmanagement-firstaid.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pdfmanagement/color-ltx.sty
-INPUT ./mitthesis.cls
-INPUT mitthesis.cls
+INPUT ./potrothesis.cls
+INPUT potrothesis.cls
 INPUT ./modules/core/setup.tex
 INPUT ./modules/core/setup.tex
 INPUT ./modules/core/setup.tex
@@ -207,9 +207,9 @@ INPUT ./modules/layout/fonts.tex
 INPUT ./modules/layout/fonts.tex
 INPUT ./modules/layout/fonts.tex
 INPUT modules/layout/fonts.tex
-INPUT ./fontsets/mitthesis-defaultfonts.tex
-INPUT ./fontsets/mitthesis-defaultfonts.tex
-INPUT fontsets/mitthesis-defaultfonts.tex
+INPUT ./fontsets/potrothesis-defaultfonts.tex
+INPUT ./fontsets/potrothesis-defaultfonts.tex
+INPUT fontsets/potrothesis-defaultfonts.tex
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty

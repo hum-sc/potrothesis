@@ -22,15 +22,15 @@
 % Can include some css to style the html-rendered thesis, 2025/10/15.
 \cs_if_exist:NT \tag_if_active:T {
   \tag_if_active:T { % 2025/04/26
-    \msg_new:nnn    { \ClassName } { no_css_file } {I~can't~find~the~file~mitthesis-style.css.\iow_newline:
+    \msg_new:nnn    { \ClassName } { no_css_file } {I~can't~find~the~file~potrothesis-style.css.\iow_newline:
     This~optional~file~provides~css~style~if~the~tagged~pdf~is~rendered~into~html.~
     								You~can~ignore~this~warning~if~you~don't~want~styling.}
-    \msg_new:nnn    { \ClassName } { css_file_loaded } {The~file~mitthesis-style.css~has~been~loaded.}
-    \file_if_exist:nTF {mitthesis-style.css}
+    \msg_new:nnn    { \ClassName } { css_file_loaded } {The~file~potrothesis-style.css~has~been~loaded.}
+    \file_if_exist:nTF {potrothesis-style.css}
     	{
 		\tagpdfsetup
 			{
-			css-list-add = { mitthesis-style.css } % attach this css to the pdf
+			css-list-add = { potrothesis-style.css } % attach this css to the pdf
 			}
 			\msg_note:nn { \ClassName } { css_file_loaded } 
 			}{  
@@ -43,7 +43,7 @@
 
 \cs_if_exist:NT  \tag_if_active:T {
   \tag_if_active:T {
-    \tagpdfsetup { role/user-NS = mitthesis }
+    \tagpdfsetup { role/user-NS = potrothesis }
     
     \tagpdfsetup { role/new-tag = { Title_sig_block/Div } }
     \tagpdfsetup { role/new-tag = { Author/Div } }

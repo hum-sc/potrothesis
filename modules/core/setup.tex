@@ -1,12 +1,12 @@
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{mitthesis}[\versiondate UAEMéx thesis class]
+\ProvidesClass{potrothesis}[\versiondate UAEMéx thesis class]
 
 \LoadClass[12pt,letterpaper]{report}
 
 \newif\ifpdftex % redeclaration by another package will be ignored
 \ExplSyntaxOn
-	\str_const:Nn \ClassName {mitthesis}
+	\str_const:Nn \ClassName {potrothesis}
 	\prop_gput:Nnn \g_msg_module_type_prop { \ClassName } { Class }
 	\sys_if_engine_pdftex:T  
 		{ 

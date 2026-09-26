@@ -3,17 +3,17 @@
 \ExplSyntaxOn
 
 \msg_new:nnnn { \ClassName } { nodesignfile } 
-	{ \g__mitthesis_testkey_tl .tex\iow_newline: cannot~be~not~found.~There~shall~no~design~be~loaded;~
+	{ \g__potrothesis_testkey_tl .tex\iow_newline: cannot~be~not~found.~There~shall~no~design~be~loaded;~
 	  and~error~messages~shall~be~multiplied~upon~thee.
 	}{ 
-	  Thou~hast~called~the~class~option~mydesign,~but~neither~\g__mitthesis_testkey_tl .tex\space
+	  Thou~hast~called~the~class~option~mydesign,~but~neither~\g__potrothesis_testkey_tl .tex\space
 	  nor~mydesign.tex~can~be~found.~Thou~mayst~download~mydesign.tex~from\space
-	  https://ctan.org/tex-archive/macros/latex/contrib/mitthesis/MIT-thesis-template. }
+	  https://ctan.org/tex-archive/macros/latex/contrib/potrothesis/MIT-thesis-template. }
 \ifmit@mydesign
-	\IfFileExists{ \g__mitthesis_testkey_tl .tex }
+	\IfFileExists{ \g__potrothesis_testkey_tl .tex }
 		{ 
-		  \input{  \g__mitthesis_testkey_tl .tex } 
-		  \ClassNoteNoLine{\ClassName}{Loading~\g__mitthesis_testkey_tl .tex}
+		  \input{  \g__potrothesis_testkey_tl .tex } 
+		  \ClassNoteNoLine{\ClassName}{Loading~\g__potrothesis_testkey_tl .tex}
 		}
 		{ \msg_error:nn { \ClassName } { nodesignfile } }
 \else

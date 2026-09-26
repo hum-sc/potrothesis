@@ -44,7 +44,7 @@
 %%  At present, these options do not address the evolving code for tagged longtable captions. 2026/01/28
 %%  (Note that subcaption package will load caption package.)
 %
-\cs_new:Nn \__mitthesis_adjustcaptions: 
+\cs_new:Nn \__potrothesis_adjustcaptions: 
 	{
 %	\setlength\abovecaptionskip{5\p@} % If you desire some adjustments to this dimension.
 %
@@ -72,7 +72,7 @@
 			}
 	  	} 
 	}{  
-	\__mitthesis_adjustcaptions:
+	\__potrothesis_adjustcaptions:
 	}
 }{\relax}
 
@@ -80,7 +80,7 @@
 \IfPackageLoadedTF{subcaption}
 {
 	\msg_new:nnn { \ClassName } { subcaptionloaded }
-		{ Subcaption~package~has~been~loaded,~so~I~won't\iow_newline: load~mitthesis's~subfigure~or~subcaption~code. } 
+		{ Subcaption~package~has~been~loaded,~so~I~won't\iow_newline: load~potrothesis's~subfigure~or~subcaption~code. } 
 	\msg_warning:nn { \ClassName } { subcaptionloaded }
 }{
     \newcounter{SubFigure}[figure]

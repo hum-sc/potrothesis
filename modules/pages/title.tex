@@ -2,33 +2,33 @@
 \RenewDocumentCommand\maketitle{s}{
 	\cs_if_exist:NF \DegreeMonth { \msg_error:nn { \ClassName } { no_degree_date } } % msg def'd in degree-date section
 %	
-	\bool_if:NTF \g__mitthesis_cclicense_bool { 
-		\tl_gset:Nn \g__mitthesis_copyright_license_tl 
-			{ This\ work\ is\ licensed\ under\ a\ \mbox{ \g__mitthesis_copyright_cclicense_tl }\ license.\par
-			  \g__mitthesis_copyright_mitpermission_tl 
+	\bool_if:NTF \g__potrothesis_cclicense_bool { 
+		\tl_gset:Nn \g__potrothesis_copyright_license_tl 
+			{ This\ work\ is\ licensed\ under\ a\ \mbox{ \g__potrothesis_copyright_cclicense_tl }\ license.\par
+			  \g__potrothesis_copyright_mitpermission_tl 
 			}
-		\tl_gset:Nn \g__mitthesis_copyright_pdfrights_tl 	 
-			{ This\ work\ is\ licensed\ under\ a\ \g__mitthesis_copyright_ccname_tl\ license.\space 
-			  \g__mitthesis_copyright_mitpermission_tl
+		\tl_gset:Nn \g__potrothesis_copyright_pdfrights_tl 	 
+			{ This\ work\ is\ licensed\ under\ a\ \g__potrothesis_copyright_ccname_tl\ license.\space 
+			  \g__potrothesis_copyright_mitpermission_tl
 			}
 	}{
-		\tl_gset:Nn \g__mitthesis_copyright_license_tl 
-			{ All\ rights\ reserved. \par\g__mitthesis_copyright_mitpermission_tl }
-		\tl_gset:Nn \g__mitthesis_copyright_pdfrights_tl 	 
-			{ All\ rights\ reserved.\space \g__mitthesis_copyright_mitpermission_tl }
+		\tl_gset:Nn \g__potrothesis_copyright_license_tl 
+			{ All\ rights\ reserved. \par\g__potrothesis_copyright_mitpermission_tl }
+		\tl_gset:Nn \g__potrothesis_copyright_pdfrights_tl 	 
+			{ All\ rights\ reserved.\space \g__potrothesis_copyright_mitpermission_tl }
    }
-   \int_compare:nNnTF { \g__mitthesis_author_cnt_int } > {1} 
+   \int_compare:nNnTF { \g__potrothesis_author_cnt_int } > {1} 
    		{   
-			\tl_gset:Nn \g__mitthesis_copyright_crwords_tl { The\ authors\ hereby\ grant } 
+			\tl_gset:Nn \g__potrothesis_copyright_crwords_tl { The\ authors\ hereby\ grant } 
 		}
 		{
-			\tl_gset:Nn \g__mitthesis_copyright_crwords_tl { The\ author\ hereby\ grants } 
+			\tl_gset:Nn \g__potrothesis_copyright_crwords_tl { The\ author\ hereby\ grants } 
 		}
     \IfBooleanTF {#1}{
-	    \tl_gset:Nn \g__mitthesis_copyright_mitpermission_tl { \scan_stop: }
+	    \tl_gset:Nn \g__potrothesis_copyright_mitpermission_tl { \scan_stop: }
     }{
-	    \tl_gset:Nn \g__mitthesis_copyright_mitpermission_tl 
-	    	{ \g__mitthesis_copyright_crwords_tl\ \g__mitthesis_copyright_mitpermlast_tl }
+	    \tl_gset:Nn \g__potrothesis_copyright_mitpermission_tl 
+	    	{ \g__potrothesis_copyright_crwords_tl\ \g__potrothesis_copyright_mitpermlast_tl }
     }
 %
 	\clearpage
@@ -44,43 +44,43 @@
 					\leavevmode
 					\tag_struct_begin:n { tag = Strong } % for css rendering; title css can override this choice
                     \tag_mc_begin:n { tag = Strong }
-                    \Large\textbf{ \g_mitthesis_title_tl }
+                    \Large\textbf{ \g_potrothesis_title_tl }
                     \tag_mc_end:
                     \tag_struct_end:
                     \par
                     \tag_struct_end:
                 }
-    			\__mitthesis_titlepage_blockskip:nn {12}{1.5}
+    			\__potrothesis_titlepage_blockskip:nn {12}{1.5}
 				\tag_struct_begin:n { tag = Author, title = Author }
-                \__mitthesis_author_block:
+                \__potrothesis_author_block:
     			\tag_struct_end:
-				\__mitthesis_titlepage_blockskip:nn {12}{1.5}
+				\__potrothesis_titlepage_blockskip:nn {12}{1.5}
                 \tag_struct_begin:n { tag = Degree, title = Degree } 
-                \__mitthesis_degree_block:
-                \bool_if:NT \g__mitthesis_LGO_bool { \g__mitthesis_LGO_tl }
+                \__potrothesis_degree_block:
+                \bool_if:NT \g__potrothesis_LGO_bool { \g__potrothesis_LGO_tl }
                 at~the\par
                 \textls[60]{ \text_uppercase:n { \g_titlepage_institution_name_tl } } \par
                 \DegreeMonth\ \DegreeYear\par
                 \tag_struct_end:
-    			\__mitthesis_titlepage_blockskip:nn {12}{2}
+    			\__potrothesis_titlepage_blockskip:nn {12}{2}
 				\tag_struct_begin:n { tag = Copyright, title = Copyright }
-                \copyright\space\DegreeYear\space\CopyrightAuthor\@.\c_space_token \g__mitthesis_copyright_license_tl % \@. in case name ends with III, IV, V,...
+                \copyright\space\DegreeYear\space\CopyrightAuthor\@.\c_space_token \g__potrothesis_copyright_license_tl % \@. in case name ends with III, IV, V,...
 				\par % required to center \g_copyrightlicense_tl text.
 				\tag_struct_end:
 			}
-			\__mitthesis_titlepage_blockskip:nn {18}{2}
+			\__potrothesis_titlepage_blockskip:nn {18}{2}
     		\tag_struct_begin:n { tag = Title_sig_block, title = Signatures }
-            \__mitthesis_signature_block:
+            \__potrothesis_signature_block:
 			\tag_struct_end:
-			\__mitthesis_titlepage_bottomskip:
+			\__potrothesis_titlepage_bottomskip:
 		}
 		\tag_struct_end: % end section
 		\hypersetup{
-    		pdfcopyright={ Copyright\ \DegreeYear\ by\ \CopyrightAuthor.\space \g__mitthesis_copyright_pdfrights_tl },
-    		pdfauthor={ \g__mitthesis_pdfcopyright_author_tl },
-    		pdfcaptionwriter = { \g__mitthesis_pdfcopyright_author_tl },
+    		pdfcopyright={ Copyright\ \DegreeYear\ by\ \CopyrightAuthor.\space \g__potrothesis_copyright_pdfrights_tl },
+    		pdfauthor={ \g__potrothesis_pdfcopyright_author_tl },
+    		pdfcaptionwriter = { \g__potrothesis_pdfcopyright_author_tl },
     	}
 	\cleardoublepage
-	\int_compare:nNnF { \g__mitthesis_readercnt_int } = {0} { \__mitthesis_committee_block: }
+	\int_compare:nNnF { \g__potrothesis_readercnt_int } = {0} { \__potrothesis_committee_block: }
 }
 \ExplSyntaxOff

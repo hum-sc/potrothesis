@@ -4,15 +4,15 @@
 %
 \cs_if_exist:NT \pdfmeta_xmp_add:n { \pdfmeta_xmp_add:n { <xmpRights:Marked>True</xmpRights:Marked> } }
 
-\tl_new:N \g__mitthesis_copyright_ccname_tl
-\tl_new:N \g__mitthesis_copyright_cclicense_tl
-\tl_new:N \g__mitthesis_copyright_license_tl
-\tl_new:N \g__mitthesis_copyright_pdfrights_tl
-\tl_new:N \g__mitthesis_copyright_crwords_tl
-\tl_new:N \g__mitthesis_copyright_mitpermlast_tl
+\tl_new:N \g__potrothesis_copyright_ccname_tl
+\tl_new:N \g__potrothesis_copyright_cclicense_tl
+\tl_new:N \g__potrothesis_copyright_license_tl
+\tl_new:N \g__potrothesis_copyright_pdfrights_tl
+\tl_new:N \g__potrothesis_copyright_crwords_tl
+\tl_new:N \g__potrothesis_copyright_mitpermlast_tl
 
-\tl_new:N \g__mitthesis_copyright_mitpermission_tl
-\tl_gset:Nn \g__mitthesis_copyright_mitpermlast_tl 
+\tl_new:N \g__potrothesis_copyright_mitpermission_tl
+\tl_gset:Nn \g__potrothesis_copyright_mitpermlast_tl 
 	{
 	  to\ MIT\ a\ nonexclusive,\ worldwide,\ irrevocable,\ royalty-free\ license\ to\ exercise\ 
 	  any\ and\ all\ rights\ under\ copyright,\ including\ to\ reproduce,\ preserve,\ distribute\ 
@@ -20,17 +20,17 @@
 	  open-access\ license.
 	}
 
-\bool_new:N \g__mitthesis_cclicense_bool
-\bool_gset_false:N \g__mitthesis_cclicense_bool
+\bool_new:N \g__potrothesis_cclicense_bool
+\bool_gset_false:N \g__potrothesis_cclicense_bool
 
 \NewDocumentCommand\CClicense{mm}{
-	\__mitthesis_gset_copyright_licensedata:nn {#1} {#2}
+	\__potrothesis_gset_copyright_licensedata:nn {#1} {#2}
 }
-\cs_new_protected:Nn \__mitthesis_gset_copyright_licensedata:nn 
+\cs_new_protected:Nn \__potrothesis_gset_copyright_licensedata:nn 
   {
-	\tl_gset:Nf \g__mitthesis_copyright_cclicense_tl { \hrefurl{ \tl_trim_spaces:n {#2} }{ \tl_trim_spaces:n {#1} } } % #1 - text, #2 - url  
-	\tl_gset:Ne \g__mitthesis_copyright_ccname_tl        { \tl_trim_spaces:n {#1} } 
-	\bool_gset_true:N \g__mitthesis_cclicense_bool
+	\tl_gset:Nf \g__potrothesis_copyright_cclicense_tl { \hrefurl{ \tl_trim_spaces:n {#2} }{ \tl_trim_spaces:n {#1} } } % #1 - text, #2 - url  
+	\tl_gset:Ne \g__potrothesis_copyright_ccname_tl        { \tl_trim_spaces:n {#1} } 
+	\bool_gset_true:N \g__potrothesis_cclicense_bool
 	\cs_if_exist:NT \pdfmeta_xmp_add:n {
 			\pdfmeta_xmp_add:n { <xmpRights:WebStatement>#2</xmpRights:WebStatement> }
 	}
