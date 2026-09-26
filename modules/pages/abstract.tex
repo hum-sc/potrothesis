@@ -1,0 +1,50 @@
+\ExplSyntaxOn
+% to change abstract name  (e.g., to "Summary"), follow either approach in your preamble:
+%
+%	\RenewExpandableDocumentCommand\abstractname{}{Summary}
+%	\renewcommand\abstractname{Summary}
+
+\RenewDocumentEnvironment{abstract}{+b}{
+	\cleardoublepage % use this (rather than \newpage) in case committee members page is present
+    \tag_struct_begin:n { tag = Abstract_page, title = Abstract~page }
+    { \centering
+    	\tag_struct_begin:n { tag = Abstract_title, title = Abstract~title }
+        \pdfbookmark[0]{Abstract}{abstract}
+        \leavevmode
+        {\large 
+			\tag_struct_begin:n { tag = Strong }
+	        \tag_mc_begin:n     { tag = Strong }            
+        	{ \textbf{ \g_mitthesis_title_tl } }
+	        \tag_mc_end:
+	        \tag_struct_end:
+        \par}
+        \tag_struct_end:
+        \setlength{\parskip}{0.5\baselineskip plus 2pt minus 2pt}
+        \__mitthesis_author_abstractblock:
+        \par
+        \__mitthesis_degree_abstractblock:
+	}
+    \skip_vertical:n {2\baselineskip}
+    \noindent
+    \tag_struct_begin:n { tag = Strong }
+    \tag_mc_begin:n { tag = Strong }
+	\textbf{ \text_uppercase:n { \abstractname } }
+	\tag_mc_end:
+    \tag_struct_end:
+	\skip_vertical:n { 0.5em }
+    \tag_struct_begin:n { tag = Abstract_text, title-o = \abstractname }
+	#1
+	\par\tag_struct_end:
+	\tl_if_blank:nT {#1} { MISSING\ ABSTRACT!  \msg_error:nn { \ClassName } { missing_abstract } }
+}{
+    \__mitthesis_supervisor_abstractblock:
+	\tag_struct_end: % end section
+	\cleardoublepage\ignorespacesafterend
+}
+\msg_new:nnnn { \ClassName } { missing_abstract } { Missing~Abstract!! } 
+	{ No~file~was~input~for~the~abstract.~You~need~to~do~\string\input{abstract.tex}. }
+
+%%%%%%%%%%  End abstract page module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\debug_off:n {all}
+\ExplSyntaxOff

@@ -1,0 +1,32 @@
+% We'd like these sections to have pdf bookmarks and to have the two lists appear in the table of contents and have
+% pdf bookmarks.  This is not automatic for \chapter*, which is the format of toc, lof, and lot.
+
+\RequirePackage{etoolbox}% provides \patchcmd
+
+\patchcmd{\tableofcontents}{\contentsname}{\pdfbookmark[0]{Table of Contents}{toc}\contentsname}{}{} % placement matters.
+
+%% Code to accommodate latex tagging. Rework once LaTeX3 team have finalized tagging structures and templates.
+%% Current latex-lab places tags outside \@schapter, which is harder to deal with here.
+
+\ProvideDocumentCommand\MakeLinkTarget{ s O{} m }{}
+
+\patchcmd{\listoffigures}{\chapter*{\listfigurename}}%
+		{\chapter*{\MakeLinkTarget*{listoffigures}\listfigurename}\addcontentsline{toc}{frontmatter}{\listfigurename}}{}{}
+\patchcmd{\listoftables}{\chapter*{\listtablename}}%
+		{\chapter*{\MakeLinkTarget*{listoftables}\listtablename}\addcontentsline{toc}{frontmatter}{\listtablename}}{}{}
+% removed \phantomsection, move \MakeLinkTarget* inside \chapter*, 2025/04/28. (was \chapter*{\phantomsection\listtablename}\MakeLinkTarget*{listoftables}...)
+
+% \patchcmd{\listoffigures}{\chapter*{\listfigurename}}         % 2026/06/01 latex uses templates to add keyvalues to \chapter*
+%		{\chapter*[toc={\listfigurename}]{\listfigurename}}{}{} % same effect as above, but still with \l@chapter (no font control)
+
+\NewCommandCopy\l@frontmatter\l@chapter
+\NewCommandCopy\l@backmatter\l@chapter
+\providecommand*{\toclevel@frontmatter}{0}% prevent warning, see hyperref manual Sec. 13.3
+\providecommand*{\toclevel@backmatter}{0}
+
+%% if you want different formatting for front/back matter, change here (cf. report.cls). 
+\patchcmd{\l@frontmatter}{\bfseries}{\itshape}{}{}
+\patchcmd{\l@frontmatter}{\nobreak\hfil}{\upshape\nobreak\hfil}{}{}
+\patchcmd{\l@frontmatter}{1.0em}{3pt}{}{} 
+\patchcmd{\l@backmatter}{\bfseries}{\itshape}{}{}
+\patchcmd{\l@backmatter}{\nobreak\hfil}{\upshape\nobreak\hfil}{}{}

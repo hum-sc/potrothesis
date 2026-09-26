@@ -1,0 +1,31 @@
+\ClassNoteNoLine{\ClassName}{Fontset key is \mit@fontset}
+\IfFileExists{fontsets/\ClassName-\mit@fontset.tex}{% 2023/07/03
+	\input{fontsets/\ClassName-\mit@fontset.tex}
+}{%
+	\ClassWarning{\ClassName}{Fontset file \ClassName-\mit@fontset.tex or subdirectory fontsets not found, will look for \mit@fontset.tex in your working directory}
+	\IfFileExists{\mit@fontset.tex}{% 2023/08/30
+		\input{\mit@fontset.tex}
+		}{
+    	\ClassWarning{\ClassName}{Fontset file \mit@fontset.tex not found, using default fonts. You may need to place the fontset file into your working directory}
+    	\ifpdftex
+        	\ClassNoteNoLine{\ClassName}{Loading Computer Modern Roman text and math fonts (default for pdftex)}
+        	\RequirePackage[T1]{fontenc}
+	        \RequirePackage{amssymb}% covered by unicode-math, libertinus, lucidabr, newtx, newtxsf packages.
+        	\RequirePackage{bm}	
+        	% Patch headings to automatically use bold math with CMR fonts. Compare to report.cls. 
+            % Predefined fontsets for which bold math exists: defaultfonts, fira-newtxsf, newtx, newtx-sans-text (all 4 in pdf only); + Lucida.
+            % Those fontset files also include this code. 
+        	\patchcmd{\section}{\normalfont}{\mathversion{bold}\normalfont}{}{}
+        	\patchcmd{\subsection}{\normalfont}{\mathversion{bold}\normalfont}{}{}
+        	\patchcmd{\subsubsection}{\normalfont}{\mathversion{bold}\normalfont}{}{}
+        	\patchcmd{\paragraph}{\normalfont}{\mathversion{bold}\normalfont}{}{}
+        	\patchcmd{\subparagraph}{\normalfont}{\mathversion{bold}\normalfont}{}{}
+        \else
+        	\ClassNoteNoLine{\ClassName}{Loading Latin Modern text and math fonts (default for unicode engines)}
+            \RequirePackage[warnings-off={mathtools-colon,mathtools-overbracket},mathbf=sym]{unicode-math}
+            % suppress warnings about lack of integration between mathtools and unicode-math.
+            % add mathbf=sym for proper html rendering, 2026/05/12
+            % Unicode-math loads fontspec package, but default fonts are not set up by fontspec in the default case.
+        \fi
+       }
+}

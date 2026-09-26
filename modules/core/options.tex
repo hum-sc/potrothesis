@@ -1,0 +1,67 @@
+\ExplSyntaxOn
+
+\newif\ifmit@mydesign
+\cs_new_protected:Npn \__mitthesis_gset_testdesign:n #1
+	{
+    	\mit@mydesigntrue
+    	\tl_new:N       \g__mitthesis_testkey_tl
+    	\tl_gset:Nn     \g__mitthesis_testkey_tl {#1}
+    	\tl_if_empty:NT \g__mitthesis_testkey_tl { \tl_gset:Nn \g__mitthesis_testkey_tl {mydesign} } 
+	}
+
+\IfFormatAtLeastTF{2022/11/01}{%
+    \DeclareKeys{
+    	fontset  	  .store  = \mit@fontset ,
+    	fontset  	  .usage  = load ,
+    	lineno   	  .if     = mit@lineno ,
+    	lineno 	 	  .usage  = load ,
+    	mydesign 	  .code	  = \__mitthesis_gset_testdesign:n {#1} , 
+    	mydesign 	  .usage  = load,
+    } 
+    \SetKeys[\ClassName]{fontset=defaultfonts}%
+	\DeclareUnknownKeyHandler[\ClassName]{\relax}% suppress warning about unused keys
+	\ProcessKeyOptions
+}{% And more compatibility code for distributions pre-2022/11; this will be dropped eventually.     
+    \RequirePackage{kvoptions}
+    \SetupKeyvalOptions{
+      family=\ClassName,
+      prefix=mit@,
+      setkeys=\kvsetkeys,
+    }
+    % set key [fontset] for font selection
+    \DeclareStringOption[defaultfonts]{fontset}[]
+    % set key [lineno] to load package lineno
+    \DeclareBoolOption{lineno}
+    % set key [mydesign] to input file mydesign.tex
+    \define@key{\ClassName}{mydesign}[mydesign]
+    	{ \__mitthesis_gset_testdesign:n {#1} }
+    %
+    \ProcessKeyvalOptions{\ClassName}
+    %
+    %% Turn off these keys now that we're done with them
+    \NewDocumentCommand\mit@DisableOption{m}{%
+      \DisableKeyvalOption[%
+        action=ignore,%
+        class=\ClassName%
+      ]{#1}{\ClassName}%
+    }
+    \NewDocumentCommand\mit@DisableKeys{>{\SplitList{;}}m}{\ProcessList{#1}{\mit@DisableOption}}
+    %
+    \mit@DisableKeys{fontset;lineno;mydesign}%
+    %
+    % Suppress warnings about unused global options
+    \DeclareOption*{}  
+    \ProcessOptions \relax
+}
+\ExplSyntaxOff
+
+%%%%%%%%%%%%%  Line numbering (class option)  %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifmit@lineno
+    \RequirePackage[mathlines]{lineno} 
+    \AtBeginDocument{\linenumbers}
+\fi
+
+%%% Enable dropping lineno option without trashing .aux file
+\providecommand{\@LN@col}[1]{\relax}
+\providecommand{\@LN}[2]{\relax}

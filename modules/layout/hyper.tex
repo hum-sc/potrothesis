@@ -1,0 +1,72 @@
+\RequirePackage[psdextra]{hyperref} % with option [linktoc=page], page number is linked, not title
+% use hypersetup to set details, in the main .tex file
+
+\urlstyle{same} 		% changes font for \url to the current text font
+\RequirePackage{doi} 	% creates macro for hyperlinking doi numbers
+
+%% In case \DocumentMetadata was not loaded
+\providecommand\hrefurl[2]{\href{#1}{#2}}
+
+% the user can alter these choices in the preamble, or by 
+% using \AtBeginDocument{ \hypersetup{..} } in mydesign.tex
+%
+\hypersetup{
+	colorlinks=true,
+	pdfborder={0 0 0},
+	bookmarksnumbered=true,
+	bookmarksopen=true,
+	bookmarksopenlevel=1,
+	pdfpagelayout=SinglePage,
+	pdfdisplaydoctitle=true,
+	pdfstartview=Fit,
+	pdfnewwindow=true,
+%
+	pdfcontactaddress={Massachusetts Institute of Technology, 77 Massachusetts Avenue},
+	pdfcontactcity={Cambridge, MA},
+	pdfcontactpostcode={02139-4307},
+	pdfcontactcountry={USA},
+	pdfcontacturl={https://dspace.mit.edu/handle/1721.1/7582},% DSPACE@MIT theses page
+}
+ 		
+%%%%%%%%%%%%  PDF bookmark strings  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%     By early 2024, \pdfstring removes all robust commands from bookmarks, so that such commands 
+%%%     don't cause errors; the following \pdfstringdisables serve to suppress warnings.
+
+%% \bm may be useful in headings, but let's disable in the associated bookmarks
+\pdfstringdefDisableCommands{%
+    \def\bm#1#{\relax}%
+}
+%% Let's disable \( and \) in pdf bookmarks
+\pdfstringdefDisableCommands{%
+    \def\({\relax}%
+    \def\){\relax}%
+}
+%%% Let's also make sure \NoCaseChange in section headings won't break pdf bookmarks
+\pdfstringdefDisableCommands{%
+    \let\NoCaseChange\relax%
+}
+%%% Let's just remove citations from pdf bookmarks
+\pdfstringdefDisableCommands{%
+    \def\cite{\@gobble}%
+}
+%%% Let's fix \eqref in pdf bookmarks
+\pdfstringdefDisableCommands{%
+    \def\eqref#1{(\ref{#1})}%
+}
+%%% Let's make sure footnotes in section headings don't break pdf bookmarks. (Note: \footnote, as redefined below, is protected)
+% \patchcmd{\section}{\sectionmark}{\let\footnote\@gobble\sectionmark}{}{}% <== not needed unless you implement running headers
+\pdfstringdefDisableCommands{%
+  \def\footnote#1{}%
+}
+
+%%% Here's a more cumbersome removal of the warning for $ (math shift) in pdfbookmarks.
+%%% Not implementing this by default, since novice authors may benefit from the warning. :-)
+%%% 	see: https://tex.stackexchange.com/a/620360/119566
+%\let\oldHyPsd@CatcodeWarning\HyPsd@CatcodeWarning
+%\renewcommand{\HyPsd@CatcodeWarning}[1]{% 
+%  \ifnum\pdfstrcmp{#1}{math shift}=0    % If 'math shift' is present, do nothing
+%  \else                                 
+%    \oldHyPsd@CatcodeWarning{#1}%       % else, keep usual warning.
+%  \fi
+%}

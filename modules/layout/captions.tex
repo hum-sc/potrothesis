@@ -1,0 +1,133 @@
+\ExplSyntaxOn
+\IfPackageLoadedTF{caption}{ % added 2026/01/16
+  \cs_if_exist:NT \tag_if_active:T {
+    \tag_if_active:T
+    {
+    % 	Patch the caption package so we can validate as pdf 2.0/ua-2.
+    %     See github discussion by Ulrike Fischer:
+    % 	  	https://github.com/latex3/tagging-project/issues/720#issuecomment-2386568711
+    %
+    \RemoveFromHook{begindocument}[latex-lab-testphase-float]
+    \socket_new_plug:nnn{tagsupport/parbox/before}{caption}
+      {   
+       \tagpdfparaOn % restart para tagging
+       \tl_if_empty:NTF\@current@float@struct
+        {     
+         \tag_struct_begin:n{tag = Caption,firstkid}
+        }
+        {
+         \tag_struct_begin:n{tag = Caption,parent=\@current@float@struct,firstkid}
+        }
+      }
+    \socket_new_plug:nnn{tagsupport/parbox/after}{caption}
+      {
+       \tag_struct_end:   
+      }
+    \l@addto@macro\caption@beginex@hook % this is a hook in the caption package
+      {
+        \tagpdfparaOff % \leavevmode in parbox should not start paragraph structure
+        \AssignSocketPlug{tagsupport/parbox/before}{caption}
+        \AssignSocketPlug{tagsupport/parbox/after}{caption}
+      }
+	}
+	% Address issue with LOT/LOF. see: https://github.com/latex3/tagging-project/issues/720#issuecomment-2388406105
+    \AddToHook{begindocument/end}{
+    		\renewcommand*\caption@anchor[1]{%
+        	\ifmeasuring@ \else
+           	\caption@raisedlink{\MakeLinkTarget*{#1}}%
+        	\fi}%
+    }
+  }
+}{\relax}
+
+%%  Use latex-lab hooks/sockets with recent latex version; useful WITHOUT caption package. Does not modify subcaptions as written.
+%%  At present, these options do not address the evolving code for tagged longtable captions. 2026/01/28
+%%  (Note that subcaption package will load caption package.)
+%
+\cs_new:Nn \__mitthesis_adjustcaptions: 
+	{
+%	\setlength\abovecaptionskip{5\p@} % If you desire some adjustments to this dimension.
+%
+%%%  The next two are used in mydesign, as examples of making captions or labels bold.  Leaving the code here only for reference. %%%
+%
+%	\NewSocketPlug{caption/label}{plug-A} % This strictly addresses the caption label, not caption text.
+%		{{\bfseries  ##1:\space}}
+%	\AssignSocketPlug{caption/label}{plug-A}
+%	\AddToHook{cmd/@makecaption/before}{\bfseries\mathversion{bold}} % This boldfaces the entire caption, including math IFF this font has a bold version.
+%
+	\AddToHook{cmd/@makecaption/after}
+		{ 
+	       \str_if_eq:VnT \@captype { table } { \vskip 0.5\baselineskip } % Separates table caption from tabular below it.
+		}
+	}
+
+\IfFormatAtLeastTF{2025/11/01}
+	{
+	\IfPackageLoadedTF{caption}
+	{
+	\tag_if_active:F { 
+		\AddToHook{cmd/@makecaption/after}
+			{
+		    \str_if_eq:VnT \@captype { table } { \vskip 0.5\baselineskip }
+			}
+	  	} 
+	}{  
+	\__mitthesis_adjustcaptions:
+	}
+}{\relax}
+
+% Subfigures and subcaptions *without* using the subcaption package
+\IfPackageLoadedTF{subcaption}
+{
+	\msg_new:nnn { \ClassName } { subcaptionloaded }
+		{ Subcaption~package~has~been~loaded,~so~I~won't\iow_newline: load~mitthesis's~subfigure~or~subcaption~code. } 
+	\msg_warning:nn { \ClassName } { subcaptionloaded }
+}{
+    \newcounter{SubFigure}[figure]
+    \renewcommand{\theSubFigure}{
+    	\number\numexpr\value{figure}+1\relax(\alph{SubFigure})% this styles the label/ref for a subcaption: Fig. 1(a)
+	}
+    \NewDocumentCommand\subcaption{m}
+		{
+		\vskip 5\p@
+		\tl_set:Nn   \l_tmpb_tl  { \small ( \alph{SubFigure}) \space #1 } % If you want a different subcaption style, edit this.
+		\hbox_set:Nn \l_tmpa_box { \tl_use:N \l_tmpb_tl }
+		\dim_compare:nNnTF { \box_wd:N \l_tmpa_box } > { 0.9\hsize }
+          {
+            \skip_add:Nn \leftskip  {  0.05\hsize }
+            \skip_add:Nn \rightskip {  0.05\hsize }      
+            \l_tmpb_tl \par      
+            \skip_add:Nn \leftskip  { -0.05\hsize }
+            \skip_add:Nn \rightskip { -0.05\hsize }
+          }{
+            \global \@minipagefalse
+            \hbox_to_wd:nn { \hsize } % this won't tag paragraph (it's in vmode) unless sockets are used manually
+            { 
+                \hfil
+                \cs_if_exist:NT \tag_if_active:T {
+                   \tag_if_active:T { \UseTaggingSocket { para/begin } }
+                }
+                \l_tmpb_tl
+                \cs_if_exist:NT \tag_if_active:T {
+                   \tag_if_active:T { \UseTaggingSocket { para/end } }
+                }
+                \hfil
+            }
+          }
+        \vskip 5\p@
+    }
+% first  arg (optional)  is vertical alignment of subfigure's contents (default is top alignment). [cbt]
+% second arg (mandatory) is width of this subfigure
+% third  arg (mandatory) is the content of this subfigure ( which includes a \subcaption{..}, if one is needed )
+\NewDocumentEnvironment{subfigure}{ O{t} m +b }
+	{
+	  \refstepcounter{SubFigure}
+	  \begin{minipage}[#1]{#2}
+		#3 
+	}{
+	  \end{minipage}
+	  \ignorespacesafterend
+	}
+}
+
+\ExplSyntaxOff

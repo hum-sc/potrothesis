@@ -1,0 +1,57 @@
+\ExplSyntaxOn
+\RenewDocumentCommand\title{m}
+	{
+		\__mitthesis_gset_title:n { #1 }
+		\cs_gset:Npe \@title { \tl_use:N \g_mitthesis_title_tl } % 2024/08/06
+		\hypersetup{
+			pdftitle={ { \g_mitthesis_title_tl } }, % extra braces protect commas that may be in title tl.
+		}
+	}
+
+\tl_new:N \g_mitthesis_title_tl
+
+\cs_new_protected:Nn \__mitthesis_gset_title:n
+	{
+		\tl_gset:Nn \g_mitthesis_title_tl { \tl_trim_spaces:n {#1} }
+	}
+
+\tl_new:N \g_titlepage_institution_name_tl
+\tl_gset:Nn \g_titlepage_institution_name_tl { Massachusetts\ Institute\ of\ Technology } 
+\cs_new_protected:Npn \Institution #1 { \tl_gset:Nn \g_titlepage_institution_name_tl { \tl_trim_spaces:n #1 } }
+
+
+%%%%%%% Adjust vertical skips between the major blocks of the title page
+
+\bool_new:N \g__mitthesis_title_squashglue_bool
+\cs_new_protected:Nn \__mitthesis_titlepage_bottomskip: {
+	\if_bool:N \g__mitthesis_title_squashglue_bool 
+		{ 	\skip_vertical:n { 0pt plus 1filll  } }
+	\else:
+		{   \skip_vertical:n { 0pt plus 12fill } }
+	\fi:
+}
+\NewDocumentCommand\Squash{}{ \bool_gset_true:N \g__mitthesis_title_squashglue_bool } % Squashes all glue from bottom upward
+
+\bool_new:N \g__mitthesis_title_tighten_bool
+\cs_new_protected:Nn \__mitthesis_titlepage_blockskip:nn {
+	\if_bool:N \g__mitthesis_title_tighten_bool 
+		{ 	\skip_vertical:n { 6pt plus #2fill    } }
+	\else:
+		{   \skip_vertical:n { #1pt plus #2fill } }
+	\fi:
+}
+\NewDocumentCommand\Tighten{}{ \bool_gset_true:N \g__mitthesis_title_tighten_bool } % Reduces 12pt and 18pt skips to 6pt
+
+% accommodation for LGO program, 2026/05/13
+\bool_new:N        \g__mitthesis_LGO_bool
+\bool_gset_false:N \g__mitthesis_LGO_bool
+\tl_new:N          \g__mitthesis_LGO_tl
+\tl_gset:Nn        \g__mitthesis_LGO_tl { in~conjunction~with~the~Leaders~for~Global~Operations~program \par }
+
+\NewDocumentCommand\LGO{}{ \bool_gset_true:N \g__mitthesis_LGO_bool }
+
+\NewDocumentCommand\TitlePageProgramNote{m}{% extend to other programs that add to title page in the same way
+	\tl_gset:Nn       \g__mitthesis_LGO_tl   {#1 \par}
+	\bool_gset_true:N \g__mitthesis_LGO_bool
+}
+\ExplSyntaxOff

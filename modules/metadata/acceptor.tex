@@ -1,0 +1,41 @@
+\ExplSyntaxOn
+\seq_new:N \g__mitthesis_acceptor_name_seq
+\seq_new:N \g__mitthesis_acceptor_dept_seq
+\seq_new:N \g__mitthesis_acceptor_title_seq
+\int_gzero_new:N \g__mitthesis_acceptor_cnt_int
+
+\bool_new:N \g__mitthesis_acceptor_title_bool
+\bool_gset_false:N \g__mitthesis_acceptor_title_bool
+
+\NewDocumentCommand\Acceptor{mmm}{
+	\tl_if_blank:nTF {#1} {
+		\msg_error:nn { \ClassName } { blank_acceptor }
+		}{
+		\__mitthesis_gset_acceptor_data:nnn {#1} {#2} {#3}
+	}
+	\tl_if_blank:nT  {#2} { \msg_error:nn { \ClassName } { blank_acceptor_dep } }
+	\tl_if_blank:nTF {#3} {
+		\bool_gset_true:N \g__mitthesis_acceptor_title_bool
+		\msg_warning:nn { \ClassName } { blank_acceptor_title }}{}
+}
+\msg_new:nnnn { \ClassName } { blank_acceptor }
+		{ Missing~acceptor~name,~check~for~blank~in~\Acceptor{name}{department}{title}~command. }{
+			You~MUST~provide~the~acceptor's~name~using~the~\Acceptor{name}{department}{title}~command. }
+\msg_new:nnnn { \ClassName } { blank_acceptor_dep }
+		{ Missing~acceptor~department,~check~for~blank~in~\Acceptor{name}{department}{title}~command. }{
+			You~MUST~provide~the~acceptor's~department~using~the~\Acceptor{name}{department}{title}~command. }
+\msg_new:nnn { \ClassName } { blank_acceptor_title }
+		{ Missing~acceptor~title~(blank~in~\Acceptor{name}{department}{title}~command).\space 
+		  Perhaps~you~are~trying~to~save~vertical~space?\space  
+		  You~can~put~the~acceptor~title~into~department~field~instead.\space 
+		  For~consistency,~I~will~omit~titles~of~ALL~acceptors.
+		}
+
+\cs_new_protected:Nn \__mitthesis_gset_acceptor_data:nnn
+ {
+	\int_gincr:N \g__mitthesis_acceptor_cnt_int
+	\seq_gput_right:Ne  \g__mitthesis_acceptor_name_seq  { \tl_trim_spaces:n {#1} } 
+	\seq_gput_right:Ne  \g__mitthesis_acceptor_dept_seq  { \tl_trim_spaces:n {#2} }
+	\seq_gput_right:Ne  \g__mitthesis_acceptor_title_seq { \tl_trim_spaces:n {#3} }
+ }
+\ExplSyntaxOff

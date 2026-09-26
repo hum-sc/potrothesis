@@ -1,0 +1,20 @@
+
+\ExplSyntaxOn
+%%% backward compatibility for TeX Live 2022 and 2023
+\cs_if_exist:NF \cs_gset:Npe          { \cs_generate_variant:Nn \cs_gset:Npn {Npe}      } % not in 2023-06-30 Latex3 
+\cs_if_exist:NF \regex_split:NVN      { \cs_generate_variant:Nn \regex_split:NnN {NVN}  } % not def'd in TL 2023
+\cs_if_exist:NF \seq_gput_right:Ne    { \cs_generate_variant:Nn \seq_gput_right:Nn {Ne} } % not def'd in TL 2023
+\cs_if_exist:NF \seq_item:NV          { \cs_generate_variant:Nn \seq_item:Nn {NV}       } % not def'd in TL 2023
+\cs_if_exist:NF \str_gset:Ne          { \cs_generate_variant:Nn \str_gset:Nn {Ne}       } % not def'd in TL 2023
+\cs_if_exist:NF \text_titlecase_all:n { \cs_new:Npn \text_titlecase_all:n #1 { #1 }     } % not def'd in TL 2023
+\cs_if_exist:NF \tl_gput_right:Ne     { \cs_generate_variant:Nn \tl_gput_right:Nn {Ne}  } % not in 2023-06-30 Latex3 
+\cs_if_exist:NF \tl_gset:Ne 	      { \cs_generate_variant:Nn \tl_gset:Nn  {Ne}       } % not def'd in TL 2022
+\cs_if_exist:NF \tl_set:Ne  	      { \cs_generate_variant:Nn \tl_set:Nn   {Ne}       } % not def'd in TL 2022
+%
+\ExplSyntaxOff
+
+
+\NewDocumentCommand\CiteNolink{m}{ \begin{NoHyper}\cite{#1}\end{NoHyper} }
+% for use in optional arg of \caption[..]{..} to prevent nested link in lof/lot, which breaks tagging.
+% included for limited backward compatibility with TeX Live 2025, 2025/10/25. Will drop in late 2026 - not needed with TL 2026.
+

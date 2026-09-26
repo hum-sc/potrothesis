@@ -1,0 +1,37 @@
+% the packages in mydesign should come before babel (which may be loaded by fontset) and before hyperref
+
+\ExplSyntaxOn
+
+\msg_new:nnnn { \ClassName } { nodesignfile } 
+	{ \g__mitthesis_testkey_tl .tex\iow_newline: cannot~be~not~found.~There~shall~no~design~be~loaded;~
+	  and~error~messages~shall~be~multiplied~upon~thee.
+	}{ 
+	  Thou~hast~called~the~class~option~mydesign,~but~neither~\g__mitthesis_testkey_tl .tex\space
+	  nor~mydesign.tex~can~be~found.~Thou~mayst~download~mydesign.tex~from\space
+	  https://ctan.org/tex-archive/macros/latex/contrib/mitthesis/MIT-thesis-template. }
+\ifmit@mydesign
+	\IfFileExists{ \g__mitthesis_testkey_tl .tex }
+		{ 
+		  \input{  \g__mitthesis_testkey_tl .tex } 
+		  \ClassNoteNoLine{\ClassName}{Loading~\g__mitthesis_testkey_tl .tex}
+		}
+		{ \msg_error:nn { \ClassName } { nodesignfile } }
+\else
+	\RequirePackage[dvipsnames,svgnames,x11names]{xcolor}
+	%
+	\AtBeginDocument{
+		\hypersetup{
+		linkcolor=Blue3,% color names from xcolor package
+		citecolor=Blue3,
+		urlcolor=violet,
+		filecolor=red, 
+		}
+		\ifmit@lineno
+			\renewcommand{\linenumberfont}{\sffamily\mdseries\tiny\color{violet}}% add \mdseries 2023/10/11
+		\fi
+	}
+	% \RequirePackage{caption,subcaption}
+	% Caption package can be loaded in mydesign.tex, if such features are really needed.
+	% Replaced subcaption package with code that follows. 2026/01/24	
+\fi
+\ExplSyntaxOff

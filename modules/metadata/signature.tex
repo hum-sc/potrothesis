@@ -1,0 +1,103 @@
+\ExplSyntaxOn
+\NewDocumentCommand\SignatureBlockSize{m}{
+	\__mitthesis_gset_signature_size:n {#1}
+}
+
+\tl_new:N \g__mitthesis_signature_size_tl
+\cs_new_protected:Nn \__mitthesis_gset_signature_size:n 
+  {
+	\tl_gset:Nf \g__mitthesis_signature_size_tl { \tl_trim_spaces:n {#1} }
+	\token_case_meaning:NnF \g__mitthesis_signature_size_tl
+	{ 
+		\normalsize {} \small {} \footnotesize{} \scriptsize{} \tiny{}
+	} {
+		\msg_error:nn { \ClassName } { weird_sigsize }
+	}
+  }
+\msg_new:nnnn { \ClassName } { weird_sigsize }
+		{ \SignatureBlockSize~expects~a~font-sizing~command,~such~as~\small,~\footnotesize,~etc.
+		}{
+		  You~used~a~weird~input~value~here.~If~you~did~so~deliberately,~try~continuing.
+		}	
+
+\cs_new_protected:Nn \__mitthesis_signature_block: {
+	\int_compare:nNnT { \g__mitthesis_supervisor_cnt_int } = {0} {
+		\msg_error:nn { \ClassName } { no_supervisor } % this message is def'd in Abstract supervisor block
+	}	
+	\int_compare:nNnT { \g__mitthesis_acceptor_cnt_int } = {0} {
+		\msg_error:nn { \ClassName } { no_acceptor }
+	}	
+	\tl_if_exist:NF \g_mitthesis_dd_thesisdate_tl { 
+		\msg_error:nn { \ClassName } { no_thesis_date }
+	}
+
+    \g__mitthesis_signature_size_tl
+    \dim_set:Nn \topsep {0pt}
+    \dim_set:Nn \partopsep {0pt}
+    \noindent
+    { \tagpdfsetup{table/tagging=presentation}
+        \begin{tabular}{@{}ll@{}}
+        \int_step_inline:nn { \g__mitthesis_author_cnt_int }
+          {
+            \tag_struct_begin:n { tag = Span }
+              \tag_mc_begin:n { tag = Span }
+                Authored\ by:
+              \tag_mc_end:
+            \tag_struct_end:
+            & \seq_item:Nn \g__mitthesis_author_name_seq       { ##1 } \\
+            & \seq_item:Nn \g__mitthesis_author_department_seq { ##1 } \\
+            & \g_mitthesis_dd_thesisdate_tl \\[1em]
+          }
+    \int_step_inline:nn { \g__mitthesis_supervisor_cnt_int }
+      {
+        \tag_struct_begin:n { tag = Span }
+          \tag_mc_begin:n { tag = Span }
+            Certified\ by:
+          \tag_mc_end:
+        \tag_struct_end:
+        & \seq_item:Nn \g__mitthesis_supervisor_name_seq  { ##1 } \\
+        & \seq_item:Nn \g__mitthesis_supervisor_title_seq { ##1 } ,\ 
+        	\g__mitthesis_titlepg_sup_designation_tl \\[1em]
+      }
+    	\int_compare:nNnF { \g__mitthesis_acceptor_cnt_int } = {0} {
+            \int_step_inline:nn { \g__mitthesis_acceptor_cnt_int }
+              {
+                \tag_struct_begin:n { tag = Span }
+                  \tag_mc_begin:n { tag = Span }
+                    Accepted\ by:
+                  \tag_mc_end:
+                \tag_struct_end:
+                & \seq_item:Nn \g__mitthesis_acceptor_name_seq { ##1 } \\
+                & \seq_item:Nn \g__mitthesis_acceptor_dept_seq { ##1 }
+                    			\bool_if:NF \g__mitthesis_acceptor_title_bool
+                    			{
+                    				\\
+                    				& \seq_item:Nn \g__mitthesis_acceptor_title_seq { ##1 }
+                    			}
+                			\int_compare:nNnTF { ##1 } = { \g__mitthesis_acceptor_cnt_int } 
+                			{ \\ }{ \\[1em] }
+              }
+    	}
+    	\end{tabular}
+	}
+}
+\msg_new:nnnn { \ClassName } { no_acceptor }
+		{ Missing~acceptor!You~must~issue~the~\Acceptor{name}{department}{title}~command.
+		}{
+		  You~MUST~issue~the~\Acceptor{name}{department}{title}~command~after~\string\begin{document}\space
+		  and~before~\string\maketitle.
+		}
+\msg_new:nnnn { \ClassName } { no_thesis_date }
+		{ Missing~thesis~date!~You~must~issue~the~\ThesisDate{Date~thesis~is~submitted}~command.
+		}{
+		  You~MUST~issue~the~\ThesisDate{Date~thesis~is~submitted}~command~after~\string\begin{document}\space
+		  and~before~\string\maketitle.
+		}
+
+% If for some reason you don't want a warning when you omit \Acceptor
+\NewDocumentCommand\SuppressAcceptorError{}
+  {
+  	\msg_redirect_name:nnn { \ClassName } { no_acceptor } { none }
+  }
+  
+\ExplSyntaxOff

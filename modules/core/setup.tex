@@ -1,0 +1,28 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{mitthesis}[\versiondate UAEMéx thesis class]
+
+\LoadClass[12pt,letterpaper]{report}
+
+\newif\ifpdftex % redeclaration by another package will be ignored
+\ExplSyntaxOn
+	\str_const:Nn \ClassName {mitthesis}
+	\prop_gput:Nnn \g_msg_module_type_prop { \ClassName } { Class }
+	\sys_if_engine_pdftex:T  
+		{ 
+		  \pdftextrue
+	   	  \msg_new:nnn { \ClassName } { notagpdftex } { Run~lualatex,~not~pdftex,\iow_newline: 
+		  												when~tagging~is~used~in~\DocumentMetadata } 
+		  \cs_if_exist:NT \tag_if_active:T % not in TeX Live 2021, def'd in 2022/06/01 LaTeX if \DocumentMetadata is loaded.
+			{
+		     \tag_if_active:T { \msg_error:nn  { \ClassName } { notagpdftex } }
+			}
+		}
+\ExplSyntaxOff
+
+
+\providecommand\IfFormatAtLeastTF{\@ifl@t@r\fmtversion}% compare version to date; \If... added to latex 2020/10/01
+
+\IfFormatAtLeastTF{2022/06/01}{\relax}{%
+	\ClassError{\ClassName}{Your LaTeX format is dated \fmtversion.  Formats dated 2022-06-01 or later are necessary for this class. Older formats are not supported and will generate serious errors.}{UPDATE your LaTeX distribution. TeX Live is available for download at no charge: \string https://www.tug.org/texlive/.}%
+}

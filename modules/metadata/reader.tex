@@ -1,0 +1,33 @@
+\ExplSyntaxOn
+\seq_new:N \g__mitthesis_reader_name_seq
+\seq_new:N \g__mitthesis_reader_title_seq
+\seq_new:N \g__mitthesis_reader_department_seq
+\int_gzero_new:N \g__mitthesis_readercnt_int
+
+\NewDocumentCommand\Reader{mmm}{
+	\tl_if_blank:nTF {#1} {
+		\msg_error:nn { \ClassName } { blank_reader }
+		}{
+		\__mitthesis_gset_reader_data:nnn {#1} {#2} {#3}
+	}
+	\tl_if_blank:nT {#2} {  \msg_error:nn { \ClassName } { blank_reader_title } }
+	\tl_if_blank:nT {#3} {  \msg_error:nn { \ClassName } { blank_reader_dep   } }
+}
+\msg_new:nnnn { \ClassName } { blank_reader }
+		{ Missing~reader~name,~check~for~blank~in~\Reader{name}{title}{department}~command. }{
+			You~MUST~provide~the~reader's~name~using~the~\Reader{name}{title}{department}~command. }
+\msg_new:nnnn { \ClassName } { blank_reader_title }
+		{ Missing~reader~title,~check~for~blank~in~\Reader{name}{department}{title}~command. }{
+			You~MUST~provide~the~reader's~title~using~the~\Reader{name}{title}{department}~command. }
+\msg_new:nnnn { \ClassName } { blank_reader_dep }
+		{ Missing~reader~department,~check~for~blank~in~\Reader{name}{title}{department}~command. }{
+			You~MUST~provide~the~reader's~department~using~the~\Reader{name}{title}{department}~command. }
+
+\cs_new_protected:Nn \__mitthesis_gset_reader_data:nnn
+ {
+	\int_gincr:N \g__mitthesis_readercnt_int
+	\seq_gput_right:Ne  \g__mitthesis_reader_name_seq       { \tl_trim_spaces:n {#1} } 
+	\seq_gput_right:Ne  \g__mitthesis_reader_title_seq      { \tl_trim_spaces:n {#2} }
+	\seq_gput_right:Ne  \g__mitthesis_reader_department_seq { \tl_trim_spaces:n {#3} }
+ }
+\ExplSyntaxOff

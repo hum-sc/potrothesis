@@ -1,0 +1,170 @@
+\ExplSyntaxOn
+%
+% Presentation tables are used on this page for rendering the tagged file into html with consistent alignments.
+%
+
+% select something other than "Thesis Reader"
+\tl_new:N   \g__mitthesis_reader_name_tl
+\tl_gset:Nn \g__mitthesis_reader_name_tl { Thesis~Reader } 
+\NewDocumentCommand\ThesisReaderName{ m } { 
+		\tl_gset:Nn \g__mitthesis_reader_name_tl 
+				{ \cs_if_exist:NTF \text_titlecase_all:n % not def'd until 2023/07/08
+					{ \text_titlecase_all:n { \text_lowercase:n { \tl_trim_spaces:n {#1} } } }
+					{ \tl_trim_spaces:n {#1} }
+				}
+		}
+% use plural "Supervisors" if more than one supervisor
+\cs_new_protected:Nn \__mitthesis_gset_supervisor_plurals: {
+    \int_compare:nNnT { \g__mitthesis_supervisor_cnt_int } > {1} 
+       	{   
+    		\tl_gput_right:Nn \g__mitthesis_titlepg_sup_designation_tl { s } 
+    	}
+    \int_compare:nNnT { \g__mitthesis_readercnt_int } > {1} 
+       	{   
+    		\tl_gput_right:Nn \g__mitthesis_reader_name_tl { s } 
+    	}
+}
+
+% selection something other than "THESIS COMMITTEE"
+\tl_new:N   \g__mitthesis_committee_name_tl
+\tl_gset:Nn \g__mitthesis_committee_name_tl { THESIS~COMMITTEE } 
+\NewDocumentCommand\ThesisCommitteeName{ m } { 
+		\tl_gset:Nn \g__mitthesis_committee_name_tl 
+				{ \cs_if_exist:NTF \text_uppercase:n % not def'd until 2023/07/08
+					{ \text_uppercase:n { \tl_trim_spaces:n {#1} } }
+					{ \MakeUpperCase{ \tl_trim_spaces:n {#1} } }
+				}
+		}
+
+% reduce white space around title ("THESIS COMMITTEE"), e.g., if too many committee members
+\bool_new:N \g__mitthesis_short_cmtitle_bool
+\cs_new_protected:Nn \__mitthesis_cmtitle_blockskip: {
+	\if_bool:N \g__mitthesis_short_cmtitle_bool 
+		{ 	\skip_vertical:n { 32pt } }
+	\else:
+		{   \skip_vertical:n { 56pt } }
+	\fi:
+}
+\NewDocumentCommand\CMPShortenTop{}{ \bool_gset_true:N \g__mitthesis_short_cmtitle_bool } % Reduces 56pt skips to 32pt
+
+% styling of text in headings
+\cs_new:Nn  \__mitthesis_CMstyle:n    { { \bfseries  \Large\lsstyle #1 } } 
+\cs_new:Nn  \__mitthesis_CMsubstyle:n { { \normalfont\scshape\large\lsstyle #1 } }
+
+
+% Convert all "\&" to "and", split title list at each "\\ &", \emph each item in the sequence, output emphasized items each separated by "\\ &". 
+% Rev: 2026/07/04, 2026/08/07 to handle unicode characters & to streamline code.
+
+\tl_const:Nn    \c__mitthesis_bsbs_tl { \\ }
+\tl_const:Nn    \c__mitthesis_amp_tl  { \& }
+\regex_const:Nn \c__mitthesis_split_lines_regex   { \u{c__mitthesis_bsbs_tl} \s* & }
+\regex_const:Nn \c__mitthesis_fix_ampersand_regex { \u{c__mitthesis_amp_tl} }
+\seq_new:N      \l__mitthesis_titles_seq
+ 
+\cs_new_protected:Nn \__mitthesis_assemble_CMtitle_list:n
+  {
+    \tl_set:Nn \l_tmpa_tl {#1}
+    \regex_replace_all:NnN \c__mitthesis_fix_ampersand_regex { and } \l_tmpa_tl
+    \regex_split:NVN       \c__mitthesis_split_lines_regex   \l_tmpa_tl \l__mitthesis_titles_seq
+    \seq_set_map:NNn       \l_tmpa_seq \l__mitthesis_titles_seq { \emph { ##1 } }
+    \seq_use:Nnnn          \l_tmpa_seq { \\ & } { \\ & } { \\ & }
+  }
+\cs_generate_variant:Nn \__mitthesis_assemble_CMtitle_list:n { e }
+
+% layout thesis committee members page (rev 2026/08/07)
+
+\cs_new_protected:Nn \__mitthesis_committee_block: {	
+	\__mitthesis_gset_supervisor_plurals:
+    \str_new:N   \g__mitthesis_committee_name_str
+    \str_gset:Ne \g__mitthesis_committee_name_str 
+    	{
+		  \text_titlecase_all:n { \text_lowercase:n { \g__mitthesis_committee_name_tl } }
+		}
+
+	\vbox_to_ht:nn { \vsize } % to prevent committee page splitting into two pages
+		{ 
+		\tag_struct_begin:n { tag = Committee_page, title = Committee~page }
+        	\leavevmode   
+			\hbox:n {} 
+        	\__mitthesis_cmtitle_blockskip:
+			{ % to contain \raggedleft
+        	\raggedleft	 
+            \tagpdfsetup{ table/tagging=presentation }
+        	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+             	&
+				\tag_struct_begin:n { tag = Committee_name, title = Committee~name }
+                \tag_struct_begin:n { tag = Strong }
+                \tag_mc_begin:n { tag = Strong  }                
+            	\__mitthesis_CMstyle:n { \g__mitthesis_committee_name_tl }
+            	\tag_mc_end:
+                \tag_struct_end:
+                \tag_struct_end:
+                \pdfbookmark[0]{ \g__mitthesis_committee_name_str }{ thesiscommittee }
+        	\end{tabular*}
+        	\__mitthesis_cmtitle_blockskip:
+	
+        	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+    			&
+				\tag_struct_begin:n { tag = Committee_block_title, title = Thesis~Supervisors }
+				\tag_mc_begin:n { tag = Committee_block_title }
+				\__mitthesis_CMsubstyle:n { \g__mitthesis_titlepg_sup_designation_tl }
+				\tag_mc_end:
+                \tag_struct_end:
+        	\end{tabular*}
+	
+        	\skip_vertical:n {12pt} 
+            \int_step_inline:nn { \g__mitthesis_supervisor_cnt_int } 	{	
+                \begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+        			&
+                	\tag_struct_begin:n { tag = Strong }
+                	\tag_mc_begin:n { tag = Strong }
+        			\textbf{ \seq_item:Nn \g__mitthesis_supervisor_name_seq {##1} }
+        			\tag_mc_end:
+        			\tag_struct_end:
+        			\\      
+        			& \__mitthesis_assemble_CMtitle_list:e { \seq_item:Nn \g__mitthesis_supervisor_title_seq
+						{##1} } \\ 
+					& \__mitthesis_assemble_CMtitle_list:e { \seq_item:Nn \g__mitthesis_supervisor_dept_seq
+						{##1} }
+        		\end{tabular*}
+        		\skip_vertical:n {14pt}
+        	}
+        	\skip_vertical:n {32pt}
+
+	
+        	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+        		&
+				\tag_struct_begin:n { tag = Committee_block_title, title = Thesis~Readers }
+				\tag_mc_begin:n { tag = Committee_block_title }
+				\__mitthesis_CMsubstyle:n { \g__mitthesis_reader_name_tl }
+				\tag_mc_end:
+            	\tag_struct_end:
+	       	\end{tabular*}
+        	\skip_vertical:n {12pt}
+	
+    	    \int_compare:nNnF { \g__mitthesis_readercnt_int } = {0} {
+            \int_step_inline:nn { \g__mitthesis_readercnt_int } 	{	
+                  	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+        				&
+                		\tag_struct_begin:n { tag = Strong }
+        				\tag_mc_begin:n { tag = Strong }
+        				\textbf{ \raggedleft 
+							\seq_item:Nn \g__mitthesis_reader_name_seq {##1} }
+        	    		\tag_mc_end:
+                        \tag_struct_end:
+                        \\
+                	    & \__mitthesis_assemble_CMtitle_list:n { \seq_item:Nn \g__mitthesis_reader_title_seq
+	    					{##1} } \\
+                        & \__mitthesis_assemble_CMtitle_list:n { \seq_item:Nn \g__mitthesis_reader_department_seq
+                        	{##1} }
+        		   \end{tabular*}
+        		\skip_vertical:n {14pt}
+        		}
+        	}
+    	\tag_struct_end:
+		}
+		\skip_vertical:n { 0pt plus 16fill }
+		}
+	\cleardoublepage\ignorespacesafterend
+}
+\ExplSyntaxOff

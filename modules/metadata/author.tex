@@ -1,0 +1,162 @@
+\ExplSyntaxOn
+\seq_new:N \g__mitthesis_author_name_seq
+\seq_new:N \g__mitthesis_author_department_seq
+\seq_new:N \g__mitthesis_author_prevdegree_seq
+\seq_new:N \g__mitthesis_author_secondprevdegree_seq
+\seq_new:N \g__mitthesis_author_thirdprevdegree_seq
+\seq_new:N \g__mitthesis_author_fourthprevdegree_seq
+\int_gzero_new:N \g__mitthesis_author_cnt_int
+
+\NewDocumentCommand\Author{ m m O{} O{} O{} O{} } % avoids -NoValue- marker of an o argument
+ {
+ 	\tl_if_blank:nTF {#1} 
+		{
+		  \msg_error:nn { \ClassName } { blank_author }
+		}{
+		  \__mitthesis_gset_author_data:nnnnnn { #1 } { #2 } { #3 } { #4 } { #5 } { #6 }
+		}
+	\tl_if_blank:nT {#2} { \msg_error:nn {\ClassName} {blank_author_dep} }
+ }
+\msg_new:nnnn { \ClassName } { blank_author } 
+				{ Missing~author~name, \iow_newline: check~for~blank~in~\Author~command. }
+				{ You~MUST~provide~an~author~name~using~the~\Author{name}{department}~command. }
+\msg_new:nnnn { \ClassName } { blank_author_dep } 
+				{ Missing~author~department, \iow_newline: check~for~blank~in~\Author~command. }
+				{ You~MUST~provide~the~author's~department~using~the~\Author{name}{department}~command. }
+
+\cs_new_protected:Nn \__mitthesis_gset_author_data:nnnnnn
+ {
+	\int_gincr:N \g__mitthesis_author_cnt_int
+	\seq_gput_right:Ne  \g__mitthesis_author_name_seq             { \tl_trim_spaces:n {#1} } 
+	\seq_gput_right:Ne  \g__mitthesis_author_department_seq       { \tl_trim_spaces:n {#2} }
+	\seq_gput_right:Ne  \g__mitthesis_author_prevdegree_seq       { \tl_trim_spaces:n {#3} }
+	\seq_gput_right:Ne  \g__mitthesis_author_secondprevdegree_seq { \tl_trim_spaces:n {#4} }
+	\seq_gput_right:Ne  \g__mitthesis_author_thirdprevdegree_seq  { \tl_trim_spaces:n {#5} }
+	\seq_gput_right:Ne  \g__mitthesis_author_fourthprevdegree_seq { \tl_trim_spaces:n {#6} }
+ }
+
+\NewExpandableDocumentCommand\CopyrightAuthor{}{
+	\tl_if_exist:NTF \g__mitthesis_copyright_author_tl
+		{ \g__mitthesis_copyright_author_tl }
+		{ \__mitthesis_gset_copyright_author: \g__mitthesis_copyright_author_tl }
+}
+
+\cs_new_protected:Nn \__mitthesis_gset_copyright_author: {
+	\tl_new:N       \g__mitthesis_copyright_author_tl
+	\int_set:Nn 	\l_tmpa_int {1} % counts authors
+    \tl_gset:Ne     \g__mitthesis_copyright_author_tl  { \seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int }
+	\int_incr:N     \l_tmpa_int
+	\int_while_do:nNnn { \l_tmpa_int } < { \g__mitthesis_author_cnt_int }
+		{
+		  \tl_gput_right:Ne \g__mitthesis_copyright_author_tl 
+		  	{ ,~\seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int }
+		  \int_incr:N \l_tmpa_int   
+		}
+	\int_compare:nNnT { \l_tmpa_int } = { \g__mitthesis_author_cnt_int } 
+		{
+        \int_compare:nNnTF { \l_tmpa_int } = { 2 }
+        	{
+        		\tl_gput_right:Ne \g__mitthesis_copyright_author_tl 
+        		    { ~and~\seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int } 
+        	 }{
+        		 \tl_gput_right:Ne \g__mitthesis_copyright_author_tl 
+        		 { ,~and~\seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int } % add comma 2025/10/08
+        	 }
+		}
+	\tl_set:Nn \l_tmpa_tl { \tl_item:Nn \g__mitthesis_copyright_author_tl {-1} } % get last token
+ 	\str_case_e:nnT 
+		{ \l_tmpa_tl  }
+	 	{ {.}{} }
+		{ \__mitthesis_copyright_remove_period:N \g__mitthesis_copyright_author_tl } % remove last token if it is a period 
+	\__mitthesis_gset_author_pdfcopyright:
+	\cs_gset:Npe \@author { \tl_use:N \g__mitthesis_copyright_author_tl }  % 2024/08/06
+}
+\cs_new_protected:Nn \__mitthesis_copyright_remove_period:N
+	{
+		\tl_gset:Ne #1 { \tl_range:Nnn #1 { 1 } { \tl_count:N #1 - 1 } }
+	}
+\cs_new_protected:Nn \__mitthesis_gset_author_pdfcopyright: {
+	\tl_new:N    \g__mitthesis_pdfcopyright_author_tl
+	\int_set:Nn  \l_tmpa_int {1} % counts authorno
+    \tl_gset:Ne  \g__mitthesis_pdfcopyright_author_tl  
+    	{ { \seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int } }
+	\int_until_do:nNnn { \l_tmpa_int } = { \g__mitthesis_author_cnt_int }
+		{
+			\int_incr:N \l_tmpa_int   
+			\tl_gput_right:Ne \g__mitthesis_pdfcopyright_author_tl 
+				{ ;\ { \seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int } }
+				% changed comma to semicolon for consistency with Dublin Core metadata format, 2024/08/30
+		}
+}
+
+\tl_new:N   \g__mitthesis_author_namesize_tl
+\tl_gset:Nn \g__mitthesis_author_namesize_tl { \large }
+\cs_new_protected:Nn  \__mitthesis_author_block: {
+	\int_set:Nn \l_tmpa_int {1} % counts authorno
+	\int_compare:nNnTF { \g__mitthesis_author_cnt_int } = {0} {
+		\msg_error:nn { \ClassName } { no_author }
+	}	
+	{by\par
+	\int_until_do:nNnn { \l_tmpa_int } = { \g__mitthesis_author_cnt_int } {
+		{ 
+			\leavevmode
+			\tag_struct_begin:n { tag = Span }
+	    	\tag_mc_begin:n { tag = Span }
+			\g__mitthesis_author_namesize_tl \seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int
+			\tag_struct_end:
+    		\tag_mc_end:
+		} \par
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_prevdegree_seq \l_tmpa_int }
+		\tl_if_empty:NF \l_tmpa_tl { \normalsize \l_tmpa_tl . } % don't insert \linebreak or \par for empty items. 
+																% add . as semantic break for html conversion (screen readers), 2026/01/18
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_secondprevdegree_seq \l_tmpa_int } 
+		\tl_if_empty:NF \l_tmpa_tl { \linebreak\normalsize \l_tmpa_tl . }
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_thirdprevdegree_seq \l_tmpa_int } 
+		\tl_if_empty:NF \l_tmpa_tl { \linebreak\normalsize \l_tmpa_tl . }
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_fourthprevdegree_seq \l_tmpa_int } 
+		\tl_if_empty:NF \l_tmpa_tl { \linebreak\normalsize \l_tmpa_tl . }
+		\par and\par
+		\int_incr:N \l_tmpa_int
+	}
+		{ 
+			\leavevmode
+			\tag_struct_begin:n { tag = Span }
+	    	\tag_mc_begin:n { tag = Span }
+			\g__mitthesis_author_namesize_tl \seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int 
+			\tag_struct_end:
+    		\tag_mc_end:
+		} \par
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_prevdegree_seq \l_tmpa_int }
+		\tl_if_empty:NF \l_tmpa_tl { \normalsize \l_tmpa_tl . } % no linebreak or par for empty items
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_secondprevdegree_seq \l_tmpa_int } 
+		\tl_if_empty:NF \l_tmpa_tl { \linebreak\normalsize \l_tmpa_tl . }
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_thirdprevdegree_seq \l_tmpa_int } 
+		\tl_if_empty:NF \l_tmpa_tl { \linebreak\normalsize \l_tmpa_tl . }
+		\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_author_fourthprevdegree_seq \l_tmpa_int } 
+		\tl_if_empty:NF \l_tmpa_tl { \linebreak\normalsize \l_tmpa_tl . }
+    	\par 
+    }
+}
+\NewDocumentCommand\AuthorNameSize{m}{
+		\tl_gset:Nn \g__mitthesis_author_namesize_tl {#1}
+}
+
+\cs_new_protected:Nn \__mitthesis_author_abstractblock: {
+	\int_set:Nn \l_tmpa_int {1} % counts authorno
+	\int_compare:nNnTF { \g__mitthesis_author_cnt_int } = {0} {
+		\msg_error:nn { \ClassName } { no_author }
+		}	
+		{by\par
+		\int_until_do:nNnn { \l_tmpa_int } = { \g__mitthesis_author_cnt_int } {
+			\seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int
+			\par and\par
+			\int_incr:N \l_tmpa_int
+		}
+		\seq_item:NV \g__mitthesis_author_name_seq \l_tmpa_int 
+    }
+}
+\msg_new:nnnn { \ClassName } { no_author }
+		{ Missing~author!~You~must~issue \iow_newline: the~\Author{name}{department}~command. }{
+		You~MUST~issue~the~\Author{name}{department}~command~after~\string\begin{document}~and~before~\string\maketitle. }
+
+\ExplSyntaxOff

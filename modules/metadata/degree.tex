@@ -1,0 +1,114 @@
+\ExplSyntaxOn
+\seq_new:N \g__mitthesis_degree_name_seq
+\seq_new:N \g__mitthesis_degree_dept_seq
+\int_gzero_new:N \g__mitthesis_degree_cnt_int
+\int_gzero_new:N \g__mitthesis_dept_cnt_int
+
+% #1 = degree ; #2 = department
+\NewDocumentCommand\Degree{mm}
+ {
+    \int_compare:nNnTF { \g__mitthesis_dept_cnt_int } = {0} {
+    	\tl_if_blank:nTF {#1} {
+    		  \msg_error:nn { \ClassName } { no_degree_name }
+    		}{
+			  \__mitthesis_gset_degree_name:n { #1 }
+			  \int_gincr:N \g__mitthesis_degree_cnt_int
+    		}
+    	\tl_if_blank:nTF {#2} {
+    		  \msg_error:nn { \ClassName } { no_degree_dep }
+    		}{
+			  \__mitthesis_gset_degree_dept:n { #2 }
+			  \int_gincr:N \g__mitthesis_dept_cnt_int
+			}
+    }{
+    	\tl_if_blank:nTF {#1} {
+    		  \msg_warning:nn { \ClassName } { blank_degree }
+    		}{
+			  \__mitthesis_gset_degree_name:n { #1 }
+			  \int_gincr:N \g__mitthesis_degree_cnt_int
+			}
+    	\tl_if_blank:nTF {#2} {
+    		  \msg_warning:nn { \ClassName } { blank_degree_dep }
+    		}{
+			  \int_gincr:N \g__mitthesis_dept_cnt_int 
+			  \__mitthesis_gset_degree_dept:n { #2 }
+    		}
+    }
+ }
+
+\cs_new_protected:Nn \__mitthesis_gset_degree_name:n
+ {
+	\seq_gput_right:Ne  \g__mitthesis_degree_name_seq  { \tl_trim_spaces:n {#1} } 
+ }
+\cs_new_protected:Nn \__mitthesis_gset_degree_dept:n
+ {
+	\seq_gput_right:Ne  \g__mitthesis_degree_dept_seq  { \tl_trim_spaces:n {#1} }
+ }
+\msg_new:nnnn { \ClassName } { no_degree_name } 
+			{ Missing~degree~name,~check~for\iow_newline: blank~in~\Degree~command. } 
+			{ You~MUST~provide~at~least~one~degree~name~using~the~\Degree{name}{department}~command. }
+\msg_new:nnnn { \ClassName } { no_degree_dep } 
+			{ Missing~degree~department~for\iow_newline: Degree~command. }
+			{ You~MUST~provide~at~least~one~department~name~using~the~\Degree{name}{department}~command. }
+\msg_new:nnn { \ClassName } { blank_degree } 
+			{ Missing~degree~name~in~second~\Degree~command.\iow_newline: 
+			  Will~treat~this~as~two~departments~issuing~one~degree. }
+\msg_new:nnn { \ClassName } { blank_degree_dep } 
+			{ Missing~degree~department~in~second~\Degree~command.~Will~treat~as~one~department~issuing~two~degrees. }
+
+\cs_new_protected:Nn \__mitthesis_degree_block: { % edited 2025/10/08
+	\int_compare:nNnT { \g__mitthesis_degree_cnt_int } = {0}
+		{ 
+		  \msg_fatal:nn { \ClassName } { no_degree }
+		}	
+	\int_set:Nn  \l_tmpa_int {1} % count degree name
+	\int_set:Nn  \l_tmpb_int {1} % count degree department
+	\tl_set:Ne   \l_tmpa_tl { \seq_item:NV \g__mitthesis_degree_dept_seq \l_tmpb_int }
+	{Submitted\ to\ the\ \l_tmpa_tl} 
+	\int_until_do:nNnn { \l_tmpb_int } = { \g__mitthesis_dept_cnt_int } {
+		\int_incr:N  \l_tmpb_int
+		\tl_set:Ne   \l_tmpb_tl { \seq_item:NV \g__mitthesis_degree_dept_seq \l_tmpb_int }
+		\mbox {\ and}\linebreak
+		\mbox {the\ \l_tmpb_tl }
+	}
+    \linebreak \mbox {in\ partial\ fulfillment\ of\ the\ requirements\ for\ the\ 
+		\int_compare:nNnTF { \g__mitthesis_degree_cnt_int } > {1} {degrees} {degree}
+	\ of}
+	\par
+	\int_until_do:nNnn { \l_tmpa_int } = { \g__mitthesis_degree_cnt_int } {
+    	\textls[60]{ \text_uppercase:n { \seq_item:NV \g__mitthesis_degree_name_seq \l_tmpa_int } }\par and\par
+		\int_incr:N     \l_tmpa_int
+		}
+    \textls[60]{\text_uppercase:n { \seq_item:NV \g__mitthesis_degree_name_seq \l_tmpa_int } }\par
+}
+\msg_new:nnnn { \ClassName } { no_degree }
+		{ Missing~degree!~You~must\iow_newline: issue~the~\Degree{name}{department}~command. 
+		}{
+		  You~MUST~issue~the~\Degree{name}{department}~command~after~\string\begin{document}\space
+		  and~before~\string\maketitle.~ You~do~want~the~degree,~don't~you?
+		}
+
+
+\cs_new_protected:Nn \__mitthesis_degree_abstractblock: { % edited 2025/10/08
+	\int_set:Nn  \l_tmpa_int {1}
+	\int_set:Nn  \l_tmpb_int {1}
+	\tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__mitthesis_degree_dept_seq \l_tmpb_int }
+	{Submitted\ to\ the\ \l_tmpa_tl} 
+	\int_until_do:nNnn { \l_tmpb_int } = { \g__mitthesis_dept_cnt_int } {
+		\int_incr:N      \l_tmpb_int
+		\tl_set:Ne \l_tmpb_tl { \seq_item:NV \g__mitthesis_degree_dept_seq \l_tmpb_int }
+		\mbox {\ and}\linebreak
+		\mbox {the\ \l_tmpb_tl }
+	}
+    \linebreak \mbox{on\ \g_mitthesis_dd_thesisdate_tl\ in\ partial\ fulfillment\ of\ the\ requirements\ for\ the\ 
+		\int_compare:nNnTF { \g__mitthesis_degree_cnt_int } > {1} { degrees } { degree }
+	\ of}
+	\skip_vertical:n { 6pt plus 2pt minus 2pt }
+	\int_until_do:nNnn { \l_tmpa_int } = { \g__mitthesis_degree_cnt_int } {
+    	\textls[60]{ \text_uppercase:n {\seq_item:NV \g__mitthesis_degree_name_seq \l_tmpa_int } } \par and \par
+		\int_incr:N     \l_tmpa_int
+		}
+    \textls[60]{ \text_uppercase:n {\seq_item:NV \g__mitthesis_degree_name_seq \l_tmpa_int } }
+    \skip_vertical:n { 6pt plus 2pt minus 2pt }
+}
+\ExplSyntaxOff

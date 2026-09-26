@@ -1,0 +1,69 @@
+\ExplSyntaxOn
+%% In case tagging commands are undefined
+\cs_if_exist:NF  \tag_struct_begin:n
+	{ 
+	  \cs_new_protected:Npn \tag_struct_begin:n #1 { \scan_stop: } 
+	  \cs_new_protected:Nn  \tag_struct_end:   	 { \scan_stop: } 
+	}
+\cs_if_exist:NF  \tag_mc_begin:n
+	{ 
+	  \cs_new_protected:Npn \tag_mc_begin:n    #1 { \scan_stop: } 
+	  \cs_new_protected:Nn  \tag_mc_end:       	{ \scan_stop: } 
+	}
+\cs_if_exist:NF  \tagpdfsetup
+	{ 
+	  \cs_new_protected:Npn \tagpdfsetup	     #1 { \scan_stop: } 
+	}
+\cs_if_exist:NF  \UseTaggingSocket
+	{
+	  \cs_new_protected:Npn \UseTaggingSocket	 #1 { \scan_stop: }
+	}
+
+% Can include some css to style the html-rendered thesis, 2025/10/15.
+\cs_if_exist:NT \tag_if_active:T {
+  \tag_if_active:T { % 2025/04/26
+    \msg_new:nnn    { \ClassName } { no_css_file } {I~can't~find~the~file~mitthesis-style.css.\iow_newline:
+    This~optional~file~provides~css~style~if~the~tagged~pdf~is~rendered~into~html.~
+    								You~can~ignore~this~warning~if~you~don't~want~styling.}
+    \msg_new:nnn    { \ClassName } { css_file_loaded } {The~file~mitthesis-style.css~has~been~loaded.}
+    \file_if_exist:nTF {mitthesis-style.css}
+    	{
+		\tagpdfsetup
+			{
+			css-list-add = { mitthesis-style.css } % attach this css to the pdf
+			}
+			\msg_note:nn { \ClassName } { css_file_loaded } 
+			}{  
+			\msg_note:nn { \ClassName } { no_css_file } 
+			}
+  }
+}
+
+%%%  Custom tags for this class  %%%%%
+
+\cs_if_exist:NT  \tag_if_active:T {
+  \tag_if_active:T {
+    \tagpdfsetup { role/user-NS = mitthesis }
+    
+    \tagpdfsetup { role/new-tag = { Title_sig_block/Div } }
+    \tagpdfsetup { role/new-tag = { Author/Div } }
+    \tagpdfsetup { role/new-tag = { Degree/Div } }
+    \tagpdfsetup { role/new-tag = { Copyright/Div } }
+    
+    \tagpdfsetup { role/new-tag = { Committee_page/Sect } }
+    \tagpdfsetup { role/new-tag = { Committee_name/Span  } }       % NB: sits in presentation table cell
+    \tagpdfsetup { role/new-tag = { Committee_block_title/Span } } % Thesis Supervisor or Readers; sits in presentation table cell
+    
+    \tagpdfsetup { role/new-tag = { Abstract_page/Sect } }
+    \tagpdfsetup { role/new-tag = { Abstract_title/Div } }
+    \tagpdfsetup { role/new-tag = { Abstract_text/Div  } }
+    \tagpdfsetup { role/new-tag = { Abstract_supervisor/Div  } }
+    
+    \tagpdfsetup { role/new-tag = { Nomenclature_list/Div  } }
+    \tagpdfsetup { role/new-tag = { Nomenclature_entry_heading/Span  } }
+  }
+}
+\ExplSyntaxOff
+
+% Note: Div and Span are non-semantic text-grouping elements, which 
+%       gain semantic meaning only if attributes are assigned to them.

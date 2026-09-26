@@ -1,0 +1,17 @@
+\ExplSyntaxOn
+%\debug_on:n { all }
+
+\cs_new_protected:Nn \__mitthesis_note_comma: 
+	{ 
+	  \peek_meaning:NT \footnote { \textsuperscript{ \mdseries, } } 
+	}
+\IfFormatAtLeastTF{2025/11/01}{	%  Added 2026/05/12, edited 2026/08/07
+	\hook_gput_code:nnn {cmd/footnote/after}{footnotecomma}{ \exp_after:wN \__mitthesis_note_comma: } 
+	%\AddToHook{cmd/footnote/after}[footnotecomma]{ \exp_after:wN \__mitthesis_note_comma: }  % the user-level command
+	% This hook should be executed last. Otherwise, declare a hook rule.
+}{
+	\cs_new_eq:NN \__mitthesis_savefootnote: \footnote
+	\cs_gset_protected:Npn \footnote #1    { \__mitthesis_savefootnote: {#1} \__mitthesis_note_comma: } 
+}
+
+\ExplSyntaxOff

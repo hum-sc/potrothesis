@@ -1,0 +1,22 @@
+\RequirePackage[letterpaper,top=1in,bottom=1in,left=1in,right=1in,marginparwidth=50pt,headsep=12pt,footskip=0.5in,heightrounded]{geometry} 
+% 44\baselineskip = \textheight - \topskip = 650.0pt - 12pt with rounded height
+
+\RequirePackage{graphicx}
+
+\RequirePackage{mathtools}% loads and extends amsmath; must load before hyperref and unicode-math
+
+% To free \eqref from the normal font (i.e., for use in section headings)
+\renewcommand{\eqref}[1]{\textup{\hbox{\m@th{(\ignorespaces\ref{#1}\unskip\@@italiccorr)}}}}
+%
+% amsmath def:  \newcommand{\eqref}[1]{\textup{\tagform@{\ref{#1}}}}
+%				\def\tagform@#1{\maketag@@@{(\ignorespaces#1\unskip\@@italiccorr)}}
+%				\def\maketag@@@#1{\hbox{\m@th\normalfont#1}}
+
+% To streamline switching from lualatex to pdftex when using sample chapters 1 and 2, which put \psi as \mitpsi (etc.) in a toc entry
+\ifpdftex
+  \providecommand*\mitpsi{\psi}
+  \providecommand*\mitdelta{\delta}
+  \providecommand*\mitDelta{\Delta}
+  \providecommand*\mittheta{\theta}
+  \providecommand*\mitTheta{\Theta}
+\fi

@@ -1,0 +1,82 @@
+\providecommand{\nomname}{Nomenclature}  
+\newlength\nomenwidth
+\newlength\savitemsep
+
+% nomenclature entries
+\NewDocumentCommand\entry{m m}{%
+    \item[#1\hfill]#2%
+    \@itempenalty=-\@lowpenalty
+}
+% nomenclature subheadings 
+\ExplSyntaxOn
+\NewDocumentCommand\EntryHeading{m}{%
+	\itemsep3\p@ plus 1\p@ minus 1\p@
+    \goodbreak
+    \item[\tag_struct_begin:n { tag = Nomenclature_entry_heading } \emph{#1}\tag_struct_end: \hfill]\mbox{}% add mbox for tagged pdf 2023/10/11; 2025/09/23 replace \itshape by \emph for css
+    \setlength{\itemsep}{\savitemsep}\@itempenalty=10000 % increased to 10000, 2025/04/20
+}
+%
+%   Increase first optional argument to > 2em if wide entries cause undesired misalignment of columns. 
+%   Second optional argument can be used to rename the environment, e.g., to List of Symbols.
+%   Third optional argument selects section-level or chapter-level style for the nomenclature list.
+%   Fourth option argument selects the style of the toc entry (by default, same as #3); the values
+%		frontmatter or backmatter can be used when nomenclature is located with front or back matter. 2025/01/17
+\NewDocumentEnvironment{nomenclature}{O{2em} O{\nomname} O{section} O{#3}}{%
+    \setlength\columnsep{2em}% 
+    \setlength{\nomenwidth}{#1}%
+    \tl_set:Ne \l_tmpa_tl { nomenclature\alph{section} }
+    \tl_set:Ne \l_tmpb_tl {#2}
+    \MakeLinkTarget*{\l_tmpa_tl}\csname #3\endcsname *{\l_tmpb_tl}\addcontentsline{toc}{#4}{#2}%
+    \raggedright
+    \tag_struct_begin:n { tag = Nomenclature_list }
+    \begin{list}{}{%
+         \setlength{\itemsep}{0pt}%
+         \setlength{\parsep}{\itemsep}%
+         \setlength{\labelsep}{1em}%
+         \setlength{\labelwidth}{\nomenwidth}%
+         \setlength{\leftmargin}{\labelwidth}%
+         \addtolength{\leftmargin}{\labelsep}%
+		 \setlength{\savitemsep}{\itemsep}%
+    }%
+}{	\end{list}
+	\tag_struct_end:
+	\ignorespacesafterend
+ }
+
+%	The *-version, nomenclature*, sets the nomenclature in a two-column format.
+%   The user must load the multicol package!
+%	The loading is done *inside* the environment and *before* the list starts so that:
+%	i) the nomenclature heading is not in two-column; ii) the list margins are correct.
+%
+\NewDocumentEnvironment{nomenclature*}{ O{2em} O{\nomname} O{section} O{#3} }{%
+    \setlength\columnsep{2em}% 
+    \setlength{\nomenwidth}{#1}%
+    \tl_set:Ne \l_tmpa_tl { nomenclature\alph{section} }
+    \tl_set:Ne \l_tmpb_tl {#2}
+    \MakeLinkTarget*{\l_tmpa_tl}\csname #3\endcsname *{\l_tmpb_tl}\addcontentsline{toc}{#4}{#2}%
+    \vspace{-\multicolsep}% don't to add to the vertical space already provided by the heading
+    \tag_struct_begin:n { tag = Nomenclature_list }
+	\begin{multicols}{2}%
+    \raggedright
+    \begin{list}{}{%
+         \setlength{\itemsep}{0pt}%
+         \setlength{\parsep}{\itemsep}%
+         \setlength{\labelsep}{1em}%
+         \setlength{\labelwidth}{\nomenwidth}%
+         \setlength{\leftmargin}{\labelwidth}%
+         \addtolength{\leftmargin}{\labelsep}%
+		 \setlength{\savitemsep}{\itemsep}%
+    }%
+}{
+	\end{list}
+	\end{multicols}
+	\tag_struct_end:
+	\ignorespacesafterend
+ }
+\ExplSyntaxOff
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\endinput
+%%
+%% End of file `mitthesis.cls'.
