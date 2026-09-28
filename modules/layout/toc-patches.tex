@@ -3,7 +3,13 @@
 
 \RequirePackage{etoolbox}% provides \patchcmd
 
-\patchcmd{\tableofcontents}{\contentsname}{\pdfbookmark[0]{Table of Contents}{toc}\contentsname}{}{} % placement matters.
+\patchcmd{\tableofcontents}{\contentsname}{\pdfbookmark[0]{
+	\ifmit@spanish
+		Índice general
+	\else
+		Table of Contents
+	\fi
+}{toc}\contentsname}{}{} % placement matters.
 
 %% Code to accommodate latex tagging. Rework once LaTeX3 team have finalized tagging structures and templates.
 %% Current latex-lab places tags outside \@schapter, which is harder to deal with here.

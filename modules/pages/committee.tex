@@ -5,7 +5,7 @@
 
 % select something other than "Thesis Reader"
 \tl_new:N   \g__potrothesis_reader_name_tl
-\tl_gset:Nn \g__potrothesis_reader_name_tl { Thesis~Reader } 
+\tl_gset:Nn \g__potrothesis_reader_name_tl {\l__mitthesis_str_reader_tl} 
 \NewDocumentCommand\ThesisReaderName{ m } { 
 		\tl_gset:Nn \g__potrothesis_reader_name_tl 
 				{ \cs_if_exist:NTF \text_titlecase_all:n % not def'd until 2023/07/08
@@ -17,17 +17,17 @@
 \cs_new_protected:Nn \__potrothesis_gset_supervisor_plurals: {
     \int_compare:nNnT { \g__potrothesis_supervisor_cnt_int } > {1} 
        	{   
-    		\tl_gput_right:Nn \g__potrothesis_titlepg_sup_designation_tl { s } 
+    		\tl_gset:Nn \g__potrothesis_titlepg_sup_designation_tl { \l__mitthesis_str_sups_designation_tl } 
     	}
     \int_compare:nNnT { \g__potrothesis_readercnt_int } > {1} 
        	{   
-    		\tl_gput_right:Nn \g__potrothesis_reader_name_tl { s } 
+    		\tl_gset:Nn \g__potrothesis_reader_name_tl { \l__mitthesis_str_readers_tl } 
     	}
 }
 
 % selection something other than "THESIS COMMITTEE"
 \tl_new:N   \g__potrothesis_committee_name_tl
-\tl_gset:Nn \g__potrothesis_committee_name_tl { THESIS~COMMITTEE } 
+\tl_gset:Nn \g__potrothesis_committee_name_tl { \l__mitthesis_str_committee_tl } 
 \NewDocumentCommand\ThesisCommitteeName{ m } { 
 		\tl_gset:Nn \g__potrothesis_committee_name_tl 
 				{ \cs_if_exist:NTF \text_uppercase:n % not def'd until 2023/07/08
@@ -73,7 +73,7 @@
 
 % layout thesis committee members page (rev 2026/08/07)
 
-\cs_new_protected:Nn \__potrothesis_committee_block: {	
+\cs_new_protected:Nn \__potrothesis_committee_block_eng: {	
 	\__potrothesis_gset_supervisor_plurals:
     \str_new:N   \g__potrothesis_committee_name_str
     \str_gset:Ne \g__potrothesis_committee_name_str 
@@ -166,5 +166,108 @@
 		\skip_vertical:n { 0pt plus 16fill }
 		}
 	\cleardoublepage\ignorespacesafterend
+}
+
+\cs_new_protected:Nn \__potrothesis_committee_block_es: {	
+		\__potrothesis_gset_supervisor_plurals:
+    \str_new:N   \g__potrothesis_committee_name_str
+    \str_gset:Ne \g__potrothesis_committee_name_str 
+    	{
+		  \text_titlecase_all:n { \text_lowercase:n { \g__potrothesis_committee_name_tl } }
+		}
+
+	\vbox_to_ht:nn { \vsize } % to prevent committee page splitting into two pages
+		{ 
+		\tag_struct_begin:n { tag = Committee_page, title = Committee~page }
+        	\leavevmode   
+			\hbox:n {} 
+        	\__potrothesis_cmtitle_blockskip:
+			{ % to contain \raggedleft
+        	\raggedleft	 
+            \tagpdfsetup{ table/tagging=presentation }
+        	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+             	&
+				\tag_struct_begin:n { tag = Committee_name, title = Committee~name }
+                \tag_struct_begin:n { tag = Strong }
+                \tag_mc_begin:n { tag = Strong  }                
+            	\__potrothesis_CMstyle:n { \g__potrothesis_committee_name_tl }
+            	\tag_mc_end:
+                \tag_struct_end:
+                \tag_struct_end:
+                \pdfbookmark[0]{ \g__potrothesis_committee_name_str }{ thesiscommittee }
+        	\end{tabular*}
+        	\__potrothesis_cmtitle_blockskip:
+	
+        	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+    			&
+				\tag_struct_begin:n { tag = Committee_block_title, title = Thesis~Supervisors }
+				\tag_mc_begin:n { tag = Committee_block_title }
+				\__potrothesis_CMsubstyle:n { \g__potrothesis_titlepg_sup_designation_tl }
+				\tag_mc_end:
+                \tag_struct_end:
+        	\end{tabular*}
+	
+        	\skip_vertical:n {12pt} 
+            \int_step_inline:nn { \g__potrothesis_supervisor_cnt_int } 	{	
+                \begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+        			&
+                	\tag_struct_begin:n { tag = Strong }
+                	\tag_mc_begin:n { tag = Strong }
+        			\textbf{ \seq_item:Nn \g__potrothesis_supervisor_name_seq {##1} }
+        			\tag_mc_end:
+        			\tag_struct_end:
+        			\\      
+        			& \__potrothesis_assemble_CMtitle_list:e { \seq_item:Nn \g__potrothesis_supervisor_title_es_seq
+						{##1} } \\ 
+					& \__potrothesis_assemble_CMtitle_list:e { \seq_item:Nn \g__potrothesis_supervisor_dept_es_seq
+						{##1} }
+        		\end{tabular*}
+        		\skip_vertical:n {14pt}
+        	}
+        	\skip_vertical:n {32pt}
+
+	
+        	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+        		&
+				\tag_struct_begin:n { tag = Committee_block_title, title = Thesis~Readers }
+				\tag_mc_begin:n { tag = Committee_block_title }
+				\__potrothesis_CMsubstyle:n { \g__potrothesis_reader_name_tl }
+				\tag_mc_end:
+            	\tag_struct_end:
+	       	\end{tabular*}
+        	\skip_vertical:n {12pt}
+	
+    	    \int_compare:nNnF { \g__potrothesis_readercnt_int } = {0} {
+            \int_step_inline:nn { \g__potrothesis_readercnt_int } 	{	
+                  	\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+        				&
+                		\tag_struct_begin:n { tag = Strong }
+        				\tag_mc_begin:n { tag = Strong }
+        				\textbf{ \raggedleft 
+							\seq_item:Nn \g__potrothesis_reader_name_seq {##1} }
+        	    		\tag_mc_end:
+                        \tag_struct_end:
+                        \\
+                	    & \__potrothesis_assemble_CMtitle_list:n { \seq_item:Nn \g__potrothesis_reader_title_es_seq
+	    					{##1} } \\
+                        & \__potrothesis_assemble_CMtitle_list:n { \seq_item:Nn \g__potrothesis_reader_department_es_seq
+                        	{##1} }
+        		   \end{tabular*}
+        		\skip_vertical:n {14pt}
+        		}
+        	}
+    	\tag_struct_end:
+		}
+		\skip_vertical:n { 0pt plus 16fill }
+		}
+	\cleardoublepage\ignorespacesafterend
+}
+
+\cs_new_protected:Nn \__potrothesis_committee_block: {	
+	\ifmit@spanish
+		{ \__potrothesis_committee_block_es: }
+	\else:
+		{ \__potrothesis_committee_block_eng: }
+	\fi:
 }
 \ExplSyntaxOff

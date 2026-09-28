@@ -56,35 +56,123 @@
 \msg_new:nnn { \ClassName } { blank_degree_dep } 
 			{ Missing~degree~department~in~second~\Degree~command.~Will~treat~as~one~department~issuing~two~degrees. }
 
+%Spanish degree and department version
+\seq_new:N \g__potrothesis_degree_name_es_seq
+\seq_new:N \g__potrothesis_degree_dept_es_seq
+\int_gzero_new:N \g__potrothesis_degree_cnt_es_int
+\int_gzero_new:N \g__potrothesis_dept_cnt_es_int
+
+
+\NewDocumentCommand\DegreeES{mm}
+ {
+	\int_compare:nNnTF { \g__potrothesis_dept_cnt_es_int } = {0} {
+		\tl_if_blank:nTF {#1} {
+			  \msg_error:nn { \ClassName } { no_degree_name_es }
+			}{
+			  \__potrothesis_gset_degree_name_es:n { #1 }
+			  \int_gincr:N \g__potrothesis_degree_cnt_es_int
+			}
+		\tl_if_blank:nTF {#2} {
+			  \msg_error:nn { \ClassName } { no_degree_dep_es }
+			}{
+			  \__potrothesis_gset_degree_dept_es:n { #2 }
+			  \int_gincr:N \g__potrothesis_dept_cnt_es_int
+			}
+	}{
+		\tl_if_blank:nTF {#1} {
+			  \msg_warning:nn { \ClassName } { blank_degree_es }
+			}{
+			  \__potrothesis_gset_degree_name_es:n { #1 }
+			  \int_gincr:N \g__potrothesis_degree_cnt_es_int
+			}
+		\tl_if_blank:nTF {#2} {
+			  \msg_warning:nn { \ClassName } { blank_degree_dep_es }
+			}{
+			  \int_gincr:N \g__potrothesis_dept_cnt_es_int 
+			  \__potrothesis_gset_degree_dept_es:n { #2 }
+			}
+	}
+ }
+
+
+ \cs_new_protected:Nn \__potrothesis_gset_degree_name_es:n
+  {
+	\seq_gput_right:Ne  \g__potrothesis_degree_name_es_seq  { \tl_trim_spaces:n {#1} } 
+  }
+ \cs_new_protected:Nn \__potrothesis_gset_degree_dept_es:n
+  {
+	\seq_gput_right:Ne  \g__potrothesis_degree_dept_es_seq  { \tl_trim_spaces:n {#1} }
+  }
+
+
+\msg_new:nnnn { \ClassName } { no_degree_name_es } 
+		{ Missing~degree~name,~check~for\iow_newline: blank~in~\DegreeES~command. } 
+		{ You~MUST~provide~at~least~one~degree~name~using~the~\DegreeES{name}{department}~command. }
+\msg_new:nnnn { \ClassName } { no_degree_dep_es } 
+		{ Missing~degree~department~for\iow_newline: DegreeES~command. }
+		{ You~MUST~provide~at~least~one~department~name~using~--the~\DegreeES{name}{department}~command. }
+\msg_new:nnn { \ClassName } { blank_degree_es } 
+		{ Missing~degree~name~in~second~\DegreeES~command.\iow_newline: 
+			Will~treat~this~as~two~departments~issuing~one~degree. }
+\msg_new:nnn { \ClassName } { blank_degree_dep_es } 
+		{ Missing~degree~department~in~second~\DegreeES~command.~Will~treat~as~one~department~issuing~two~degrees. }
+
 \cs_new_protected:Nn \__potrothesis_degree_block: { % edited 2025/10/08
-	\int_compare:nNnT { \g__potrothesis_degree_cnt_int } = {0}
-		{ 
-		  \msg_fatal:nn { \ClassName } { no_degree }
-		}	
 	\int_set:Nn  \l_tmpa_int {1} % count degree name
 	\int_set:Nn  \l_tmpb_int {1} % count degree department
-	\tl_set:Ne   \l_tmpa_tl { \seq_item:NV \g__potrothesis_degree_dept_seq \l_tmpb_int }
-	{Submitted\ to\ the\ \l_tmpa_tl} 
-	\int_until_do:nNnn { \l_tmpb_int } = { \g__potrothesis_dept_cnt_int } {
-		\int_incr:N  \l_tmpb_int
-		\tl_set:Ne   \l_tmpb_tl { \seq_item:NV \g__potrothesis_degree_dept_seq \l_tmpb_int }
-		\mbox {\ and}\linebreak
-		\mbox {the\ \l_tmpb_tl }
-	}
-    \linebreak \mbox {in\ partial\ fulfillment\ of\ the\ requirements\ for\ the\ 
-		\int_compare:nNnTF { \g__potrothesis_degree_cnt_int } > {1} {degrees} {degree}
-	\ of}
-	\par
-	\int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_degree_cnt_int } {
-    	\textls[60]{ \text_uppercase:n { \seq_item:NV \g__potrothesis_degree_name_seq \l_tmpa_int } }\par and\par
-		\int_incr:N     \l_tmpa_int
+	\ifmit@spanish
+		\int_compare:nNnT { \g__potrothesis_degree_cnt_es_int } = {0}
+			{ 
+			\msg_fatal:nn { \ClassName } { no_degree_es }
+			}
+		\tl_set:Ne   \l_tmpa_tl { \seq_item:NV \g__potrothesis_degree_dept_es_seq \l_tmpb_int }
+	
+	\else
+		\int_compare:nNnT { \g__potrothesis_degree_cnt_int } = {0}
+			{ 
+			\msg_fatal:nn { \ClassName } { no_degree }
+			}	
+		\tl_set:Ne   \l_tmpa_tl { \seq_item:NV \g__potrothesis_degree_dept_seq \l_tmpb_int }
+		{Submitted\ to\ the\ \l_tmpa_tl} 
+		\int_until_do:nNnn { \l_tmpb_int } = { \g__potrothesis_dept_cnt_int } {
+			\int_incr:N  \l_tmpb_int
+			\tl_set:Ne   \l_tmpb_tl { \seq_item:NV \g__potrothesis_degree_dept_seq \l_tmpb_int }
+			\mbox {\ and}\linebreak
+			\mbox {the\ \l_tmpb_tl }
 		}
-    \textls[60]{\text_uppercase:n { \seq_item:NV \g__potrothesis_degree_name_seq \l_tmpa_int } }\par
+		\linebreak 
+	\fi
+
+    \mbox {\l__mitthesis_str_fulfillment_tl\space
+		\int_compare:nNnTF { \g__potrothesis_degree_cnt_int } > {1} {\l__mitthesis_str_degrees_tl} {\l__mitthesis_str_degree_tl}
+	\ \l__mitthesis_str_of_tl\ }
+	\par
+
+	\ifmit@spanish
+		\int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_degree_cnt_es_int } {
+			\textls[60]{ \text_uppercase:n { \seq_item:NV \g__potrothesis_degree_name_es_seq \l_tmpa_int } }\par y\par
+			\int_incr:N     \l_tmpa_int
+			}
+		\textls[60]{\text_uppercase:n { \seq_item:NV \g__potrothesis_degree_name_es_seq \l_tmpa_int } }\par
+	\else
+		\int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_degree_cnt_int } {
+			\textls[60]{ \text_uppercase:n { \seq_item:NV \g__potrothesis_degree_name_seq \l_tmpa_int } }\par and\par
+			\int_incr:N     \l_tmpa_int
+			}
+		\textls[60]{\text_uppercase:n { \seq_item:NV \g__potrothesis_degree_name_seq \l_tmpa_int } }\par
+	\fi
 }
+
 \msg_new:nnnn { \ClassName } { no_degree }
 		{ Missing~degree!~You~must\iow_newline: issue~the~\Degree{name}{department}~command. 
 		}{
 		  You~MUST~issue~the~\Degree{name}{department}~command~after~\string\begin{document}\space
+		  and~before~\string\maketitle.~ You~do~want~the~degree,~don't~you?
+		}
+\msg_new:nnnn { \ClassName } { no_degree_es }
+		{ Missing~degree~in~spanish!~You~must\iow_newline: issue~the~\DegreeES{name}{department}~command. 
+		}{
+		  You~MUST~issue~the~\DegreeES{name}{department}~command~after~\string\begin{document}\space
 		  and~before~\string\maketitle.~ You~do~want~the~degree,~don't~you?
 		}
 
@@ -111,4 +199,32 @@
     \textls[60]{ \text_uppercase:n {\seq_item:NV \g__potrothesis_degree_name_seq \l_tmpa_int } }
     \skip_vertical:n { 6pt plus 2pt minus 2pt }
 }
+\cs_new_protected:Nn \__potrothesis_degree_abstractblock_es: {
+    \int_set:Nn  \l_tmpa_int {1}
+    \int_set:Nn  \l_tmpb_int {1}
+    
+    % Check if Spanish degree data exists
+    \int_compare:nNnT { \g__potrothesis_degree_cnt_es_int } = {0}
+        { 
+          \msg_fatal:nn { \ClassName } { no_degree_es }
+        }
+
+    \tl_set:Ne \l_tmpa_tl { \seq_item:NV \g__potrothesis_degree_dept_es_seq \l_tmpb_int }   
+    % Spanish date and partial fulfillment text block
+     \mbox {\l__mitthesis_str_fulfillment_tl\space
+		\int_compare:nNnTF { \g__potrothesis_degree_cnt_int } > {1} {\l__mitthesis_str_degrees_tl} {\l__mitthesis_str_degree_tl}
+	\ \l__mitthesis_str_of_tl\ }
+	\par
+    
+    \skip_vertical:n { 6pt plus 2pt minus 2pt }
+    
+    \int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_degree_cnt_es_int } {
+        \textls[60]{ \text_uppercase:n {\seq_item:NV \g__potrothesis_degree_name_es_seq \l_tmpa_int } } \par y \par
+        \int_incr:N     \l_tmpa_int
+        }
+    \textls[60]{ \text_uppercase:n {\seq_item:NV \g__potrothesis_degree_name_es_seq \l_tmpa_int } }
+    
+    \skip_vertical:n { 6pt plus 2pt minus 2pt }
+}
+
 \ExplSyntaxOff

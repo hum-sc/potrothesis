@@ -96,7 +96,7 @@
 	\int_compare:nNnTF { \g__potrothesis_author_cnt_int } = {0} {
 		\msg_error:nn { \ClassName } { no_author }
 	}	
-	{by\par
+	{\l__mitthesis_str_by_tl\par
 	\int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_author_cnt_int } {
 		{ 
 			\leavevmode
@@ -159,4 +159,18 @@
 		{ Missing~author!~You~must~issue \iow_newline: the~\Author{name}{department}~command. }{
 		You~MUST~issue~the~\Author{name}{department}~command~after~\string\begin{document}~and~before~\string\maketitle. }
 
+\cs_new_protected:Nn \__potrothesis_author_abstractblock_es: {
+	\int_set:Nn \l_tmpa_int {1} % counts authorno
+	\int_compare:nNnTF { \g__potrothesis_author_cnt_int } = {0} {
+		\msg_error:nn { \ClassName } { no_author }
+		}	
+		{presenta\par
+		\int_until_do:nNnn { \l_tmpa_int } = { \g__potrothesis_author_cnt_int } {
+			\seq_item:NV \g__potrothesis_author_name_seq \l_tmpa_int
+			\par and\par
+			\int_incr:N \l_tmpa_int
+		}
+		\seq_item:NV \g__potrothesis_author_name_seq \l_tmpa_int 
+    }
+}
 \ExplSyntaxOff

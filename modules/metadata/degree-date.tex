@@ -20,6 +20,13 @@
 \NewDocumentCommand\DegreeDate{mm}{ %   {month}{year}	
 	\__potrothesis_gset_dd_dates:nn {#1} {#2}
 	\cs_new:Npn \DegreeMonth { \text_titlecase_first:n { \text_lowercase:n \g__potrothesis_dd_month_tl } }
+	\tl_new:N \g__potrothesis_dd_month_es_tl
+	\cs_new:Npn \DegreeMonthES 
+		{
+			\tl_set:Nf \g__potrothesis_dd_month_es_tl { \translateMonth { \g__potrothesis_dd_month_tl } }
+			\text_titlecase_first:n{\g__potrothesis_dd_month_es_tl}
+		}
+	\cs_new:Npn \DegreeMonthESlower {\translateMonth{\g__potrothesis_dd_month_tl}} % Spanish version
 	\cs_new:Npn \DegreeYear  { \text_expand:n { \g__potrothesis_dd_year_tl  } } % edited 2024/06/24
 }
 \msg_new:nnnn { \ClassName } { no_degree_date } { Missing~degree~date! }{

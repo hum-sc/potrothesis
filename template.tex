@@ -22,7 +22,7 @@
 %
 %	pdfversion  = 2.0,            % default version
 %
-%	tagging		= on,             % For tagging, run lualatex with *TeX Live 2026* or later.
+	tagging		= off,             % For tagging, run lualatex with *TeX Live 2026* or later.
 					              % Tagging is necessary for accessibility and html rendering
 					              % Do not include appendixb.tex when tagging is on (packages in that appendix are not compatible).
 %	pdfstandard = { ua-2, a-4f }, % requires pdfversion = 2.0 and TeX Live 2026 or later, with tagging=on
@@ -31,7 +31,7 @@
 
 %%%%%%%%%  Documentclass and options  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[twoside]{potrothesis}
+\documentclass[twoside, spanish]{potrothesis}
 % 						fontset=libertinus, fontset=lmodern, fontset=lucida, 
 %						fontset=fira-newtxsf, fontset=newtx, fontset=newtx-sans-text,  
 %						fontset=heros-stix2,  fontset=stix2, fontset=termes-stix2, fontset=termes
@@ -227,14 +227,14 @@
 
 \begin{document}
 %%% edit the following commands to match your thesis %%%%%%%%%%
-
-\title{Propagación de Información y Aprendizaje de Metagrafos en Grafos Dinámicos Heterogéneos de Múltiples Niveles}
+\title{Information Propagation and Metagraph Learning in Multi-Level Heterogeneous Dynamic Graphs}
+\titleES{Propagación de Información y Aprendizaje de Metagrafos en Grafos Dinámicos Heterogéneos de Múltiples Niveles}
 
 % \Author{Author full name}{Author department}[Author's first PREVIOUS degree][Author's second PREVIOUS degree][...
 % Note that third, fourth, fifth, and sixth arguments are optional [] and may be omitted
 
 \Author{Humberto Antonio Salinas Cortés}{Faculty of Engineering}
-\Institution{Universidad Autónoma del Estado de México} 
+%\Institution{Universidad Autónoma del Estado de México} 
 % \Author{Silas W. Holman}{Department of Physics \\ & Department of Mathematics} % if author is in more than one department
 % \Author{Luisa Hernández}{Department of Research}[B.S. Mechanical Engineering, UCLA, 2018][M.S. Stellar Interiors, Vulcan Science Academy, 2020] 
 % \Author{Thurston Howell III}{Department of Economics}[M.B.A. Ferengi School of Management, 2022]
@@ -247,6 +247,7 @@
 % For one degree from two departments, leave the degree argument blank for the second department {}.
 
 \Degree{Bachelor of Computer Engineering}{Faculty of Engineering}
+\DegreeES{Licenciado en Ingeniería en Computación}{Facultad de Ingeniería}
 
 % \Degree{Master of Science in Physics}{}
 % \Degree{Bachelor of Science in Mechanical Engineering}{Department of Mechanical Engineering}
@@ -257,8 +258,9 @@
 
 % If there is more than one supervisor, use the \Supervisor command for each.
 % NB: optional department field added with v1.21 in late 2025. It is needed ONLY on the Thesis Committee page.
-
-\Supervisor{Edward C. Pickering}{Professor of Physics}[Department of Physics]
+% If you are writing a thesis in Spanish, you can add the Spanish title and department in the optional arguments.
+\Supervisor{Vianney Muñoz Jiménez}{Doctor in Networks and Information Technologies}[Faculty of Engineering][Doctora en Redes y Tecnologías de la Información][Facultad de Ingeniería]
+\Supervisor{Marco Antonio Ramos Corchado}{Doctor in Informatics}[Faculty of Engineering][Doctor en Informática][Facultad de Ingeniería]
 
 % Separate multiple titles or departments with "\\ &".  An "\&" used by itself will be converted to "and". 
 % \Supervisor{Secunda Castor}{Professor of Research \\ & Professor of Knowledge \\ & Professor of Reason}[Department of Research]
@@ -268,8 +270,7 @@
 % Professor who formally accepts theses for your department (e.g., Professor Sméagol, Graduate Officer, Department of Powerful Rings)
 % If more than one department gives the degree, use once for each department
 
-\Acceptor{Primus Castor}{Professor of Log Dams}{Undergraduate Officer, Department of Physics}{}
-
+%\Acceptor{Primus Castor}{Professor of Log Dams}{Undergraduate Officer, Department of Physics}{}
 % Separate multiple titles or departments with "\\ &".  An "\&" used by itself will be converted to "and". 
 % \Acceptor{Tertius Castor}{Professor of Log Dams \\ & Professor of Hydraulics}{Graduate Officer, Department of Research}
 %
@@ -280,7 +281,7 @@
 % Date degree will be issued: \DegreeDate{Month}{year}
 % Valid degree months at MIT are February, May, June, or September
 
-\DegreeDate{June}{1876}
+\DegreeDate{February}{2027}
 
 
 % Date that final thesis is submitted to department
@@ -292,9 +293,9 @@
 % The MIT Libraries do not set a format for the committee members page, and if you prefer to use your own format,
 % omit ALL readers here and insert your page just before the abstract.
 
-\Reader{Marcus Gavius Apicius}{Professor of Cooking Arts}{Department of Food Science}
-\Reader{Marie-Antoine Carême}{Professor of Haute Cuisine}{Department of Food Science}
-\Reader{Miles Gloriosus}{Professor of Personal Pronouns}{Department of Rhetoric}
+\Reader{Marcus Gavius Apicius}{Professor of Cooking Arts}{Department of Food Science}[Profesor de Artes Culinarias][Departamento de Ciencia de los Alimentos]
+\Reader{Marie-Antoine Carême}{Professor of Haute Cuisine}{Department of Food Science}[Profesora de Alta Cocina][Departamento de Ciencia de los Alimentos]
+\Reader{Miles Gloriosus}{Professor of Personal Pronouns}{Department of Rhetoric}[Profesor de Pronombres Personales][Departamento de Retórica]
 
 %% Are your thesis readers running off the page?  You can move the page heading upward by uncommenting this command:
 % \CMPShortenTop
@@ -372,6 +373,10 @@
 \begin{abstract}
 	\input{content/abstract.tex}% using \input, rather than \include, because we're inside an environment
 \end{abstract}
+
+\begin{abstractES}
+	\input{content/abstract.tex}% using \input, rather than \include, because we're inside an environment
+\end{abstractES}
 
 \include{content/acknowledgments}% acknowledgments.tex (.tex extension is presumed by \include) 
 

@@ -44,6 +44,60 @@
 \msg_new:nnnn { \ClassName } { missing_abstract } { Missing~Abstract!! } 
 	{ No~file~was~input~for~the~abstract.~You~need~to~do~\string\input{abstract.tex}. }
 
+
+% To change the Spanish abstract name (e.g., to "Sumario"), follow this approach in your preamble:
+%   \RenewExpandableDocumentCommand\abstractnameES{}{Sumario}
+%   \renewcommand\abstractnameES{Resumen}
+
+\tl_new:N \g__potrothesis_abstractname_es_tl
+\tl_gset:Nn \g__potrothesis_abstractname_es_tl { Resumen }
+
+\NewDocumentCommand\abstractnameES { m }
+  { \tl_gset:Nn \g__potrothesis_abstractname_es_tl {#1} }
+\RenewExpandableDocumentCommand \abstractnameES {}
+  { \g__potrothesis_abstractname_es_tl }
+
+\NewDocumentEnvironment{abstractES}{+b}{
+    \cleardoublepage % use this (rather than \newpage) in case committee members page is present
+    \tag_struct_begin:n { tag = Abstract_page, title = Abstract~page~ES }
+    { \centering
+        \tag_struct_begin:n { tag = Abstract_title, title = Abstract~title~ES }
+        \pdfbookmark[0]{Resumen}{abstractes}
+        \leavevmode
+        {\large 
+            \tag_struct_begin:n { tag = Strong }
+            \tag_mc_begin:n     { tag = Strong }            
+            { \textbf{ \g_potrothesis_title_es_tl } } % Uses the Spanish title sequence/variable
+            \tag_mc_end:
+            \tag_struct_end:
+        \par}
+        \tag_struct_end:
+        \setlength{\parskip}{0.5\baselineskip plus 2pt minus 2pt}
+        \__potrothesis_degree_abstractblock_es:
+        \par
+        \__potrothesis_author_abstractblock_es:\par
+    }
+    \skip_vertical:n {2\baselineskip}
+    \noindent
+    \tag_struct_begin:n { tag = Strong }
+    \tag_mc_begin:n { tag = Strong }
+    \textbf{ \text_uppercase:n { \abstractnameES } }
+    \tag_mc_end:
+    \tag_struct_end:
+    \skip_vertical:n { 0.5em }
+    \tag_struct_begin:n { tag = Abstract_text, title-o = \abstractnameES }
+    #1
+    \par\tag_struct_end:
+    \tl_if_blank:nT {#1} { MISSING\ ABSTRACT~ES!  \msg_error:nn { \ClassName } { missing_abstract_es } }
+}{
+    \__potrothesis_supervisor_abstractblock: % Renders supervisors using the Spanish attributes if configured
+    \tag_struct_end: % end section
+    \cleardoublepage\ignorespacesafterend
+}
+
+\msg_new:nnnn { \ClassName } { missing_abstract_es } { Missing~Spanish~Abstract!! } 
+    { No~file~was~input~for~the~Spanish~abstract.~You~need~to~do~\string\input{abstract-es.tex}. }
+
 %%%%%%%%%%  End abstract page module  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\debug_off:n {all}

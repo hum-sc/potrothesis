@@ -1,5 +1,6 @@
 \ExplSyntaxOn
 
+\newif\ifmit@spanish
 \newif\ifmit@mydesign
 \cs_new_protected:Npn \__potrothesis_gset_testdesign:n #1
 	{
@@ -17,6 +18,8 @@
     	lineno 	 	  .usage  = load ,
     	mydesign 	  .code	  = \__potrothesis_gset_testdesign:n {#1} , 
     	mydesign 	  .usage  = load,
+      spanish 	  .if     = mit@spanish ,
+      spanish 	  .usage  = load,
     } 
     \SetKeys[\ClassName]{fontset=defaultfonts}%
 	\DeclareUnknownKeyHandler[\ClassName]{\relax}% suppress warning about unused keys
@@ -35,6 +38,8 @@
     % set key [mydesign] to input file mydesign.tex
     \define@key{\ClassName}{mydesign}[mydesign]
     	{ \__potrothesis_gset_testdesign:n {#1} }
+    % set key [spanish] to load babel with spanish option
+    \DeclareBoolOption{spanish}
     %
     \ProcessKeyvalOptions{\ClassName}
     %
@@ -47,7 +52,7 @@
     }
     \NewDocumentCommand\mit@DisableKeys{>{\SplitList{;}}m}{\ProcessList{#1}{\mit@DisableOption}}
     %
-    \mit@DisableKeys{fontset;lineno;mydesign}%
+    \mit@DisableKeys{fontset;lineno;mydesign;spanish}%
     %
     % Suppress warnings about unused global options
     \DeclareOption*{}  

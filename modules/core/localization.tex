@@ -1,0 +1,73 @@
+\ExplSyntaxOn
+
+% Define language token lists
+\tl_new:N \l__mitthesis_str_by_tl
+\tl_new:N \l__mitthesis_str_authored_tl
+\tl_new:N \l__mitthesis_str_certified_tl
+\tl_new:N \l__mitthesis_str_accepted_tl
+\tl_new:N \l__mitthesis_str_sup_designation_tl
+\tl_new:N \l__mitthesis_str_abst_sup_designation_tl
+\tl_new:N \l__mitthesis_str_sups_designation_tl
+\tl_new:N \l__mitthesis_str_abst_sups_designation_tl
+\tl_new:N \l__mitthesis_str_committee_tl
+\tl_new:N \l__mitthesis_str_reader_tl
+\tl_new:N \l__mitthesis_str_readers_tl
+\tl_new:N \l__mitthesis_str_fulfillment_tl
+\tl_new:N \l__mitthesis_str_degrees_tl
+\tl_new:N \l__mitthesis_str_degree_tl
+\tl_new:N \l__mitthesis_str_of_tl
+\tl_new:N \l__miththesis_str_toc_tl
+
+\ifmit@spanish
+    % --- SPANISH TRANSLATIONS (UAEMéx Style) ---
+    \tl_set:Nn \l__mitthesis_str_by_tl { presenta }
+    \tl_set:Nn \l__mitthesis_str_authored_tl { Elaborado~por: }
+    \tl_set:Nn \l__mitthesis_str_certified_tl { Director~de~Tesis: }
+    \tl_set:Nn \l__mitthesis_str_accepted_tl { Aceptado~por: }
+    \tl_set:Nn \l__mitthesis_str_sup_designation_tl { Director~de~Tesis }
+    \tl_set:Nn \l__mitthesis_str_abst_sup_designation_tl { Director~de~tesis }
+    \tl_set:Nn \l__mitthesis_str_sups_designation_tl { Directores~de~Tesis }
+    \tl_set:Nn \l__mitthesis_str_abst_sups_designation_tl { Directores~de~tesis }
+    \tl_set:Nn \l__mitthesis_str_committee_tl { COMITÉ~DE~TESIS }
+    \tl_set:Nn \l__mitthesis_str_reader_tl { Lector~de~Tesis }
+    \tl_set:Nn \l__mitthesis_str_readers_tl { Lectores~de~Tesis }
+    \tl_set:Nn \l__mitthesis_str_fulfillment_tl { tesis~que~para~obtener }
+    \tl_set:Nn \l__mitthesis_str_degrees_tl { los~grados }
+    \tl_set:Nn \l__mitthesis_str_degree_tl { el~grado }
+    \tl_set:Nn \l__mitthesis_str_of_tl { de }
+    \tl_set:Nn \l__miththesis_str_toc_tl { Índice }
+    \RequirePackage[spanish,
+  es-noshorthands,
+  es-tabla,
+  es-nodecimaldot,
+  main=spanish,
+  english]{babel}
+\else
+    % --- ENGLISH DEFAULTS (MIT Style) ---
+    \tl_set:Nn \l__mitthesis_str_by_tl { by }
+    \tl_set:Nn \l__mitthesis_str_authored_tl { Authored~by: }
+    \tl_set:Nn \l__mitthesis_str_certified_tl { Certified~by: }
+    \tl_set:Nn \l__mitthesis_str_accepted_tl { Accepted~by: }
+    \tl_set:Nn \l__mitthesis_str_sup_designation_tl { Thesis~Supervisor }
+    \tl_set:Nn \l__mitthesis_str_abst_sup_designation_tl { Thesis~supervisor }
+    \tl_set:Nn \l__mitthesis_str_sups_designation_tl { Thesis~Supervisors }
+    \tl_set:Nn \l__mitthesis_str_abst_sups_designation_tl { Thesis~supervisors }
+    \tl_set:Nn \l__mitthesis_str_committee_tl { THESIS~COMMITTEE }
+    \tl_set:Nn \l__mitthesis_str_reader_tl { Thesis~Reader }
+    \tl_set:Nn \l__mitthesis_str_readers_tl { Thesis~Readers }
+    \tl_set:Nn \l__mitthesis_str_fulfillment_tl { in~partial~fulfillment~of~the~requirements~for~the~ }
+    \tl_set:Nn \l__mitthesis_str_degrees_tl { degrees }
+    \tl_set:Nn \l__mitthesis_str_degree_tl { degree }
+    \tl_set:Nn \l__mitthesis_str_of_tl { of }
+    \tl_set:Nn \l__miththesis_str_toc_tl { Table~of~Contents }
+\fi
+
+\NewDocumentCommand\translateMonth{m}{
+    \str_case_e:nnF { \str_lowercase:f {#1} }
+        { {january}{enero} {february}{febrero} {march}{marzo} {april}{abril}
+          {may}{mayo} {june}{junio} {july}{julio} {august}{agosto}
+          {september}{septiembre} {october}{octubre} {november}{noviembre}
+          {december}{diciembre} }
+        { \msg_error:nnn { \ClassName } { wrong_month } {#1} } 
+}
+\ExplSyntaxOff

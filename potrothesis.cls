@@ -6,6 +6,7 @@
 \input{modules/core/setup}
 \input{modules/core/compatibility}
 \input{modules/core/options}
+\input{modules/core/localization}
 
 % --- Layout & Design ---
 \input{modules/layout/geometry}

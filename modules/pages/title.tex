@@ -1,4 +1,117 @@
 \ExplSyntaxOn
+
+\cs_new_protected:Nn \__potrothesis_english_title:
+	{
+		{ \centering
+			\setlength{\parskip}{7.5pt plus 1pt minus 1pt} % edited all vertical space on this page 2023/10/25
+			\setlength{\parindent}{0pt}\pdfbookmark[0]{Title\ Page}{titlepage}
+			{
+				\tag_struct_begin:n { tag = Title, title = Title }
+				\leavevmode
+				\tag_struct_begin:n { tag = Strong } % for css rendering; title css can override this choice
+				\tag_mc_begin:n { tag = Strong }
+				\Large\textbf{ \g_potrothesis_title_tl }
+				\tag_mc_end:
+				\tag_struct_end:
+				\par
+				\tag_struct_end:
+			}
+			\__potrothesis_titlepage_blockskip:nn {12}{1.5}
+			\tag_struct_begin:n { tag = Author, title = Author }
+			\__potrothesis_author_block:
+			\tag_struct_end:
+			\__potrothesis_titlepage_blockskip:nn {12}{1.5}
+			\tag_struct_begin:n { tag = Degree, title = Degree } 
+			\__potrothesis_degree_block:
+			\bool_if:NT \g__potrothesis_LGO_bool { \g__potrothesis_LGO_tl }
+			at~the\par
+			\textls[60]{ \text_uppercase:n { \g_titlepage_institution_name_tl } } \par
+			\DegreeMonth\ \DegreeYear\par
+			\tag_struct_end:
+			\__potrothesis_titlepage_blockskip:nn {12}{2}
+			\tag_struct_begin:n { tag = Copyright, title = Copyright }
+			\copyright\space\DegreeYear\space\CopyrightAuthor\@.\c_space_token \g__potrothesis_copyright_license_tl % \@. in case name ends with III, IV, V,...
+			\par % required to center \g_copyrightlicense_tl text.
+			\tag_struct_end:
+		}
+		\__potrothesis_titlepage_blockskip:nn {18}{2}
+		\tag_struct_begin:n { tag = Title_sig_block, title = Signatures }
+		\__potrothesis_signature_block:
+		\tag_struct_end:
+		\__potrothesis_titlepage_bottomskip:
+	}
+\int_set:Nn  \l_tmpa_int {1} % count degree name
+\int_set:Nn  \l_tmpb_int {1} % count degree department
+\cs_new_protected:Nn \__potrothesis_spanish_title:
+	{
+		{ \centering
+			\setlength{\parskip}{7.5pt plus 1pt minus 1pt} % edited all vertical space on this page 2023/10/25
+			\setlength{\parindent}{0pt}\pdfbookmark[0]{Title\ Page}{titlepage}
+
+			\begin{minipage}{\textwidth}
+                \centering
+                \includegraphics[height=2cm]{images/university.png}%
+                \hspace{0.6\textwidth}% Space between the two logos
+                \includegraphics[height=2cm]{images/faculty.png}
+            \end{minipage}
+			\newline
+			
+			\__potrothesis_titlepage_blockskip:nn {28}{1.5}
+
+			\tag_struct_begin:n { tag = Institution, title = Institution }
+			\textls[60]{ \text_uppercase:n { \g_titlepage_institution_name_es_tl } } \par
+			\tl_set:Ne   \l_tmpa_tl { \seq_item:NV \g__potrothesis_degree_dept_es_seq \l_tmpb_int }
+			{\fontsize{10pt}{14pt}\selectfont\textls[60]{\text_uppercase:n {\l_tmpa_tl}}} 
+			\int_until_do:nNnn { \l_tmpb_int } = { \g__potrothesis_dept_cnt_es_int } {
+				\int_incr:N  \l_tmpb_int
+				\tl_set:Ne   \l_tmpb_tl { \seq_item:NV \g__potrothesis_degree_dept_es_seq \l_tmpb_int }
+				\linebreak
+				\mbox {\fontsize{10pt}{14pt}\selectfont\textls[60]{\text_uppercase:n {\l_tmpb_tl}}}
+			}
+			\tag_struct_end:
+
+			\__potrothesis_titlepage_blockskip:nn {28}{1.5}
+			{
+				\tag_struct_begin:n { tag = Title, title = Title }
+				\leavevmode
+				\tag_struct_begin:n { tag = Strong } % for css rendering; title css can override this choice
+				\tag_mc_begin:n { tag = Strong }
+				\Large\textbf{ \g_potrothesis_title_es_tl }
+				\tag_mc_end:
+				\tag_struct_end:
+				\par
+				\tag_struct_end:
+			}
+
+			\__potrothesis_titlepage_blockskip:nn {12}{1.5}
+			\tag_struct_begin:n { tag = Degree, title = Degree } 
+			\__potrothesis_degree_block:
+			\tag_struct_end:
+
+			\__potrothesis_titlepage_blockskip:nn {12}{1.5}
+			\tag_struct_begin:n { tag = Author, title = Author }
+			\__potrothesis_author_block:
+			\tag_struct_end:
+
+			\__potrothesis_titlepage_blockskip:nn {42}{5}
+			\tag_struct_begin:n { tag = Title_sig_block, title = Signatures }
+			\__potrothesis_signature_block:
+			\tag_struct_end:
+
+			\__potrothesis_titlepage_blockskip:nn {42}{5}
+			\tag_struct_begin:n { tag = DegreeDate, title = DegreeDate }
+			\DegreeMonthES\ \DegreeYear\par
+			\tag_struct_end:
+
+			%\__potrothesis_titlepage_blockskip:nn {12}{2}
+			%\tag_struct_begin:n { tag = Copyright, title = Copyright }
+			%\copyright\space\DegreeYear\space\CopyrightAuthor\@.\c_space_token \g__potrothesis_copyright_license_tl % \@. in case name ends with III, IV, V,...
+			%\par % required to center \g_copyrightlicense_tl text.
+			%\tag_struct_end:
+		}
+		\__potrothesis_titlepage_bottomskip:
+	}
+
 \RenewDocumentCommand\maketitle{s}{
 	\cs_if_exist:NF \DegreeMonth { \msg_error:nn { \ClassName } { no_degree_date } } % msg def'd in degree-date section
 %	
@@ -36,45 +149,14 @@
 	\tag_struct_begin:n { tag = Sect, title = Titlepage }
 	\vbox_to_ht:nn { \vsize } % to prevent signature block from breaking across page
 		{
-			{ \centering
-                \setlength{\parskip}{7.5pt plus 1pt minus 1pt} % edited all vertical space on this page 2023/10/25
-                \setlength{\parindent}{0pt}\pdfbookmark[0]{Title\ Page}{titlepage}
-                {
-					\tag_struct_begin:n { tag = Title, title = Title }
-					\leavevmode
-					\tag_struct_begin:n { tag = Strong } % for css rendering; title css can override this choice
-                    \tag_mc_begin:n { tag = Strong }
-                    \Large\textbf{ \g_potrothesis_title_tl }
-                    \tag_mc_end:
-                    \tag_struct_end:
-                    \par
-                    \tag_struct_end:
-                }
-    			\__potrothesis_titlepage_blockskip:nn {12}{1.5}
-				\tag_struct_begin:n { tag = Author, title = Author }
-                \__potrothesis_author_block:
-    			\tag_struct_end:
-				\__potrothesis_titlepage_blockskip:nn {12}{1.5}
-                \tag_struct_begin:n { tag = Degree, title = Degree } 
-                \__potrothesis_degree_block:
-                \bool_if:NT \g__potrothesis_LGO_bool { \g__potrothesis_LGO_tl }
-                at~the\par
-                \textls[60]{ \text_uppercase:n { \g_titlepage_institution_name_tl } } \par
-                \DegreeMonth\ \DegreeYear\par
-                \tag_struct_end:
-    			\__potrothesis_titlepage_blockskip:nn {12}{2}
-				\tag_struct_begin:n { tag = Copyright, title = Copyright }
-                \copyright\space\DegreeYear\space\CopyrightAuthor\@.\c_space_token \g__potrothesis_copyright_license_tl % \@. in case name ends with III, IV, V,...
-				\par % required to center \g_copyrightlicense_tl text.
-				\tag_struct_end:
-			}
-			\__potrothesis_titlepage_blockskip:nn {18}{2}
-    		\tag_struct_begin:n { tag = Title_sig_block, title = Signatures }
-            \__potrothesis_signature_block:
-			\tag_struct_end:
+			\ifmit@spanish
+				\__potrothesis_spanish_title:
+			\else
+				\__potrothesis_english_title:
+			\fi
 			\__potrothesis_titlepage_bottomskip:
 		}
-		\tag_struct_end: % end section
+		 % end section
 		\hypersetup{
     		pdfcopyright={ Copyright\ \DegreeYear\ by\ \CopyrightAuthor.\space \g__potrothesis_copyright_pdfrights_tl },
     		pdfauthor={ \g__potrothesis_pdfcopyright_author_tl },

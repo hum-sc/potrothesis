@@ -2,23 +2,18 @@
 \seq_new:N \g__potrothesis_supervisor_name_seq
 \seq_new:N \g__potrothesis_supervisor_title_seq
 \seq_new:N \g__potrothesis_supervisor_dept_seq
+\seq_new:N \g__potrothesis_supervisor_title_es_seq
+\seq_new:N \g__potrothesis_supervisor_dept_es_seq
 \int_gzero_new:N \g__potrothesis_supervisor_cnt_int
 
-\NewDocumentCommand\Supervisor{mmo}{
-	\tl_if_blank:nT {#1} { \msg_error:nn { \ClassName } { blank_supervisor }       }
-	\tl_if_blank:nT {#2} { \msg_error:nn { \ClassName } { blank_supervisor_title } }
-	\IfNoValueTF {#3} 
-		{ 	\msg_note:nn { \ClassName } { no_supervisor_dept  } 
-			\__potrothesis_gset_supervisor_data:nnn {#1} {#2}
-				{ Department~argument~was~not~used~in~\Supervisor~command. }
-		} 
-		{ 	\tl_if_blank:nTF {#3}
-				{ 	\msg_note:nn { \ClassName } { blank_supervisor_dept  } 
-					\__potrothesis_gset_supervisor_data:nnn {#1} {#2} { Blank~department~in~\Supervisor~command. }
-				}{
-					\__potrothesis_gset_supervisor_data:nnn {#1} {#2} {#3}
-				}
-		}
+\NewDocumentCommand\Supervisor{mmooo}{
+    % 1. Validate mandatory fields
+    \tl_if_blank:nT {#1} { \msg_error:nn { \ClassName } { blank_supervisor }       }
+    \tl_if_blank:nT {#2} { \msg_error:nn { \ClassName } { blank_supervisor_title } }
+
+    % 6. Push safely to the global sequences
+    \__potrothesis_gset_supervisor_data:nnnnn 
+		{#1} {#2} {#3} {#4} {#5}
 }
 \msg_new:nnnn { \ClassName } { blank_supervisor }
 		{ Missing~supervisor~name,~check\iow_newline: for~blank~in~\Supervisor{name}{title}[department]~command. 
@@ -43,17 +38,19 @@
 		  The~supervisor's~department~is~used~only~in~the~optional~Thesis~Committee~page.
 		}
 
-\cs_new_protected:Nn \__potrothesis_gset_supervisor_data:nnn
+\cs_new_protected:Nn \__potrothesis_gset_supervisor_data:nnnnn
  {
 	\int_gincr:N \g__potrothesis_supervisor_cnt_int
 	\seq_gput_right:Ne  \g__potrothesis_supervisor_name_seq   { \tl_trim_spaces:n {#1} } 
 	\seq_gput_right:Ne  \g__potrothesis_supervisor_title_seq  { \tl_trim_spaces:n {#2} }
 	\seq_gput_right:Ne  \g__potrothesis_supervisor_dept_seq   { \tl_trim_spaces:n {#3} }
+	\seq_gput_right:Ne  \g__potrothesis_supervisor_title_es_seq   { \tl_trim_spaces:n {#4} }
+	\seq_gput_right:Ne  \g__potrothesis_supervisor_dept_es_seq   { \tl_trim_spaces:n {#5} }
  }
 
 \tl_new:N   \g__potrothesis_titlepg_sup_designation_tl
 \tl_new:N   \g__potrothesis_abst_sup_designation_tl
-\tl_gset:Nn \g__potrothesis_titlepg_sup_designation_tl { Thesis~Supervisor } 
+\tl_gset:Nn \g__potrothesis_titlepg_sup_designation_tl { \l__mitthesis_str_sup_designation_tl } % style per MIT Libraries
 \tl_gset:Nn \g__potrothesis_abst_sup_designation_tl  { Thesis~supervisor } % style per MIT Libraries
 
 % If for some reason you need to change "Thesis Supervisor" to a different string (say, "Doctoral Advisor").

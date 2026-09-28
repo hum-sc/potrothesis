@@ -16,9 +16,30 @@
 	}
 
 \tl_new:N \g_titlepage_institution_name_tl
-\tl_gset:Nn \g_titlepage_institution_name_tl { Massachusetts\ Institute\ of\ Technology } 
+\tl_gset:Nn \g_titlepage_institution_name_tl { Autonomous~University~of~the~State~of~Mexico } 
 \cs_new_protected:Npn \Institution #1 { \tl_gset:Nn \g_titlepage_institution_name_tl { \tl_trim_spaces:n #1 } }
 
+
+%%%%%%% Spanish title page version
+
+\NewDocumentCommand\titleES{m}{
+	\__potrothesis_gset_title_es:n { #1 }
+	\cs_gset:Npe \@title { \tl_use:N \g_potrothesis_title_es_tl } % 2024/08/06
+	\hypersetup{
+		pdftitle={ { \g_potrothesis_title_es_tl } }, % extra braces protect commas that may be in title tl.
+	}
+}
+
+\tl_new:N \g_potrothesis_title_es_tl
+
+\cs_new_protected:Nn \__potrothesis_gset_title_es:n
+	{
+		\tl_gset:Nn \g_potrothesis_title_es_tl { \tl_trim_spaces:n {#1} }
+	}
+
+\tl_new:N \g_titlepage_institution_name_es_tl
+\tl_gset:Nn \g_titlepage_institution_name_es_tl { Universidad~Autónoma~del~Estado~de~México }
+\cs_new_protected:Npn \InstitutionES #1 { \tl_gset:Nn \g_potrothesis_institution_name_es_tl { \tl_trim_spaces:n #1 } }
 
 %%%%%%% Adjust vertical skips between the major blocks of the title page
 

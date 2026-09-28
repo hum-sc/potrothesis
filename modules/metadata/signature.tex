@@ -23,63 +23,81 @@
 \cs_new_protected:Nn \__potrothesis_signature_block: {
 	\int_compare:nNnT { \g__potrothesis_supervisor_cnt_int } = {0} {
 		\msg_error:nn { \ClassName } { no_supervisor } % this message is def'd in Abstract supervisor block
-	}	
-	\int_compare:nNnT { \g__potrothesis_acceptor_cnt_int } = {0} {
-		\msg_error:nn { \ClassName } { no_acceptor }
-	}	
-	\tl_if_exist:NF \g_potrothesis_dd_thesisdate_tl { 
-		\msg_error:nn { \ClassName } { no_thesis_date }
 	}
+	\ifmit@spanish
+	{
+		\int_compare:nNnTF { \g__potrothesis_supervisor_cnt_int } > {1} {
+			Directores\ de\ tesis:\par
+		}{
+			Director\space de\space tesis:\par
+		}
+		\int_step_inline:nn { \g__potrothesis_supervisor_cnt_int }
+		{
+			\tag_struct_begin:n { tag = Span }
+			\seq_item:Nn \g__potrothesis_supervisor_name_seq { ##1 } \\
+			\seq_item:Nn \g__potrothesis_supervisor_title_es_seq { ##1 } \\[1em]
+		}
+	}
+	\else
+	{	
+		\int_compare:nNnT { \g__potrothesis_acceptor_cnt_int } = {0} {
+			\msg_error:nn { \ClassName } { no_acceptor }
+		}	
+		\tl_if_exist:NF \g_potrothesis_dd_thesisdate_tl { 
+			\msg_error:nn { \ClassName } { no_thesis_date }
+		}
 
-    \g__potrothesis_signature_size_tl
-    \dim_set:Nn \topsep {0pt}
-    \dim_set:Nn \partopsep {0pt}
-    \noindent
-    { \tagpdfsetup{table/tagging=presentation}
-        \begin{tabular}{@{}ll@{}}
-        \int_step_inline:nn { \g__potrothesis_author_cnt_int }
-          {
-            \tag_struct_begin:n { tag = Span }
-              \tag_mc_begin:n { tag = Span }
-                Authored\ by:
-              \tag_mc_end:
-            \tag_struct_end:
-            & \seq_item:Nn \g__potrothesis_author_name_seq       { ##1 } \\
-            & \seq_item:Nn \g__potrothesis_author_department_seq { ##1 } \\
-            & \g_potrothesis_dd_thesisdate_tl \\[1em]
-          }
-    \int_step_inline:nn { \g__potrothesis_supervisor_cnt_int }
-      {
-        \tag_struct_begin:n { tag = Span }
-          \tag_mc_begin:n { tag = Span }
-            Certified\ by:
-          \tag_mc_end:
-        \tag_struct_end:
-        & \seq_item:Nn \g__potrothesis_supervisor_name_seq  { ##1 } \\
-        & \seq_item:Nn \g__potrothesis_supervisor_title_seq { ##1 } ,\ 
-        	\g__potrothesis_titlepg_sup_designation_tl \\[1em]
-      }
-    	\int_compare:nNnF { \g__potrothesis_acceptor_cnt_int } = {0} {
-            \int_step_inline:nn { \g__potrothesis_acceptor_cnt_int }
-              {
-                \tag_struct_begin:n { tag = Span }
-                  \tag_mc_begin:n { tag = Span }
-                    Accepted\ by:
-                  \tag_mc_end:
-                \tag_struct_end:
-                & \seq_item:Nn \g__potrothesis_acceptor_name_seq { ##1 } \\
-                & \seq_item:Nn \g__potrothesis_acceptor_dept_seq { ##1 }
-                    			\bool_if:NF \g__potrothesis_acceptor_title_bool
-                    			{
-                    				\\
-                    				& \seq_item:Nn \g__potrothesis_acceptor_title_seq { ##1 }
-                    			}
-                			\int_compare:nNnTF { ##1 } = { \g__potrothesis_acceptor_cnt_int } 
-                			{ \\ }{ \\[1em] }
-              }
-    	}
-    	\end{tabular}
+		\g__potrothesis_signature_size_tl
+		\dim_set:Nn \topsep {0pt}
+		\dim_set:Nn \partopsep {0pt}
+		\noindent
+		{ \tagpdfsetup{table/tagging=presentation}
+			\begin{tabular}{@{}ll@{}}
+			\int_step_inline:nn { \g__potrothesis_author_cnt_int }
+			{
+				\tag_struct_begin:n { tag = Span }
+				\tag_mc_begin:n { tag = Span }
+					Authored\ by:
+				\tag_mc_end:
+				\tag_struct_end:
+				& \seq_item:Nn \g__potrothesis_author_name_seq       { ##1 } \\
+				& \seq_item:Nn \g__potrothesis_author_department_seq { ##1 } \\
+				& \g_potrothesis_dd_thesisdate_tl \\[1em]
+			}
+		\int_step_inline:nn { \g__potrothesis_supervisor_cnt_int }
+		{
+			\tag_struct_begin:n { tag = Span }
+			\tag_mc_begin:n { tag = Span }
+				Certified\ by:
+			\tag_mc_end:
+			\tag_struct_end:
+			& \seq_item:Nn \g__potrothesis_supervisor_name_seq  { ##1 } \\
+			& \seq_item:Nn \g__potrothesis_supervisor_title_seq { ##1 } ,\ 
+				\g__potrothesis_titlepg_sup_designation_tl \\[1em]
+		}
+			\int_compare:nNnF { \g__potrothesis_acceptor_cnt_int } = {0} {
+				\int_step_inline:nn { \g__potrothesis_acceptor_cnt_int }
+				{
+					\tag_struct_begin:n { tag = Span }
+					\tag_mc_begin:n { tag = Span }
+						Accepted\ by:
+					\tag_mc_end:
+					\tag_struct_end:
+					& \seq_item:Nn \g__potrothesis_acceptor_name_seq { ##1 } \\
+					& \seq_item:Nn \g__potrothesis_acceptor_dept_seq { ##1 }
+									\bool_if:NF \g__potrothesis_acceptor_title_bool
+									{
+										\\
+										& \seq_item:Nn \g__potrothesis_acceptor_title_seq { ##1 }
+									}
+								\int_compare:nNnTF { ##1 } = { \g__potrothesis_acceptor_cnt_int } 
+								{ \\ }{ \\[1em] }
+				}
+			}
+			\end{tabular}
+		}
 	}
+	\fi
 }
 \msg_new:nnnn { \ClassName } { no_acceptor }
 		{ Missing~acceptor!You~must~issue~the~\Acceptor{name}{department}{title}~command.
