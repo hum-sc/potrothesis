@@ -3,7 +3,7 @@
 %
 %	\RenewExpandableDocumentCommand\abstractname{}{Summary}
 %	\renewcommand\abstractname{Summary}
-
+\addto\captionsenglish{\renewcommand{\abstractname}{Abstract}}
 \RenewDocumentEnvironment{abstract}{+b}{
 	\cleardoublepage % use this (rather than \newpage) in case committee members page is present
     \tag_struct_begin:n { tag = Abstract_page, title = Abstract~page }

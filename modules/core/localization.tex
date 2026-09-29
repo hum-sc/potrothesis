@@ -42,6 +42,9 @@
   es-nodecimaldot,
   main=spanish,
   english]{babel}
+\addto\captionsspanish{%
+  \renewcommand{\abstractname}{Abstract}%
+}
 \else
     % --- ENGLISH DEFAULTS (MIT Style) ---
     \tl_set:Nn \l__mitthesis_str_by_tl { by }
