@@ -1285,6 +1285,24 @@ pdfcontactaddress={Massachusetts Institute of Technology, 77 Massachusetts Avenu
 \ExplSyntaxOff 
 \ExplSyntaxOn
 
+\tl_new:N \g__potrothesis_image_university_tl
+\tl_new:N \g__potrothesis_image_faculty_tl
+
+\NewDocumentCommand\ImageFaculty{m}{\tl_gset:Nn \g__potrothesis_image_faculty_tl {#1}}
+
+\NewDocumentCommand\ImageUniversity{m}{\tl_gset:Nn \g__potrothesis_image_university_tl {#1}}
+
+\ifmit@spanish
+	\cs_if_exist:NF \g__potrothesis_image_university_tl { \msg_error:nn { \ClassName } { no_university_image } }
+	\cs_if_exist:NF \g__potrothesis_image_faculty_tl { \msg_error:nn { \ClassName } { no_faculty_image } }
+
+\tl_if_blank:nT { \g__potrothesis_image_university_tl } { \msg_error:nn { \ClassName } { no_university_image } }
+	\tl_if_blank:nT { \g__potrothesis_image_faculty_tl } { \msg_error:nn { \ClassName } { no_faculty_image } }
+\fi
+
+\msg_new:nnn { \ClassName } { no_university_image } { No~university~image~defined! }
+\msg_new:nnn { \ClassName }{ no_faculty_image } { No~faculty~image~defined! }
+
 \cs_new_protected:Nn \__potrothesis_english_title:
 	{
 		{ \centering
@@ -1328,8 +1346,7 @@ pdfcontactaddress={Massachusetts Institute of Technology, 77 Massachusetts Avenu
 
 			\begin{minipage}{\textwidth}
                 \centering
-                \includegraphics[height=2cm]{images/university.png}\hspace{0.6\textwidth}\includegraphics[height=2cm]{images/faculty.png}
-            \end{minipage}
+                \includegraphics[height=2cm]{\g__potrothesis_image_university_tl}\hspace{0.6\textwidth}\includegraphics[height=2cm]{\g__potrothesis_image_faculty_tl}\end{minipage}
 			\newline
 			
 			\__potrothesis_titlepage_blockskip:nn {28}{1.5}
